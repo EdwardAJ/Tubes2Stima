@@ -13,3 +13,18 @@ C:\Users\FtN\source\repos\PreTubes\PreTubes\obj\Debug\PreTubes.csproj.CoreCompil
 C:\Users\FtN\source\repos\PreTubes\PreTubes\obj\Debug\PreTubes.exe
 C:\Users\FtN\source\repos\PreTubes\PreTubes\obj\Debug\PreTubes.pdb
 C:\Users\FtN\source\repos\PreTubes\PreTubes\obj\Debug\PreTubes.csprojAssemblyReference.cache
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\bin\Debug\PreTubes.exe.config
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\bin\Debug\PreTubes.exe
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\bin\Debug\PreTubes.pdb
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes.csprojAssemblyReference.cache
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\MainWindow.g.cs
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\App.g.cs
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes_MarkupCompile.cache
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes_MarkupCompile.lref
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\MainWindow.baml
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes.g.resources
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes.Properties.Resources.resources
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes.csproj.GenerateResource.cache
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes.csproj.CoreCompileInputs.cache
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes.exe
+D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\obj\Debug\PreTubes.pdb

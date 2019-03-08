@@ -63,7 +63,9 @@ namespace PreTubes
         private List<House> AntahBerantah;
         public void GetFile()
         {
-            string fileContent = File.ReadAllText(@"C:\Users\FtN\source\repos\PreTubes\PreTubes\bin\Debug\test.txt");
+            //Path File
+            string fileContent = File.ReadAllText(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\bin\Debug\test.txt");
+            //string fileContent = File.ReadAllText(@"C:\Users\FtN\source\repos\PreTubes\PreTubes\bin\Debug\test.txt");
             string[] integerStrings = fileContent.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             integers = new int[integerStrings.Length];
             for (int n = 0; n < integerStrings.Length; n++)
@@ -84,6 +86,7 @@ namespace PreTubes
                     foreach (int way in h.listWays())
                     {
                         Console.Write(way);
+                        Console.Write(" ");
                     }
                 }
                 else
@@ -220,47 +223,75 @@ namespace PreTubes
         {
             AB = new AntahBerantahClass();
             AB.SortAntahBerantah();
-            MessageBox.Show("MAP LOADED");
+            MessageBox.Show("Map loaded");
         }
         private void Check_Click(object sender, RoutedEventArgs e)
         {
+            //Program untuk mengecek apakah query yang diberikan dapat menghasilkan solusi
             string[] queryString = Query.Text.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             int[] queryNum = new int[queryString.Length];
-            for(int i = 0; i<queryString.Length; i++)
+            //Cek apakah ada query yang diinput
+            if ((queryString.Length < 3) || (queryString.Length > 3))
             {
-                queryNum[i] = int.Parse(queryString[i]);
+                if (queryString.Length == 0)
+                {
+                    Console.WriteLine("Query tidak boleh kosong");
+                    MessageBox.Show("Query tidak boleh kosong");
+                } else
+                {
+                    Console.WriteLine("Query harus sesuai format");
+                    MessageBox.Show("Query harus sesuai format");
+                }
+                
+            } else
+            {
+                if (AB != null)
+                {
+                    for (int i = 0; i < queryString.Length; i++)
+                    {
+                        queryNum[i] = int.Parse(queryString[i]);
+                    }
+
+                    //Conditinal untuk angka pertama pada query : '0' atau '1':
+                    if (queryNum[0] == 0)
+                    {
+                        if (AB.DFS(queryNum[1], queryNum[2]))
+                        {
+                            Console.WriteLine("YA");
+                            MessageBox.Show("YA");
+                        }
+                        else
+                        {
+                            Console.WriteLine("TIDAK");
+                            MessageBox.Show("TIDAK");
+                        }
+                    }
+                    else if (queryNum[0] == 1)
+                    {
+                        if (AB.DFS(queryNum[2], queryNum[1]))
+                        {
+                            Console.WriteLine("YA");
+                            MessageBox.Show("YA");
+                        }
+                        else
+                        {
+                            Console.WriteLine("TIDAK");
+                            MessageBox.Show("TIDAK");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Query harus sesuai format");
+                        MessageBox.Show("Query harus sesuai format");
+                    }
+                } else
+                {
+                    Console.WriteLine("Jangan lupa untuk Load Map!");
+                    MessageBox.Show("Jangan lupa untuk Load Map!");
+                }
+                
             }
-            if (queryNum[0] == 0)
-            {
-                if(AB.DFS(queryNum[1], queryNum[2]))
-                {
-                    Console.WriteLine("YEY");
-                    MessageBox.Show("YEY");
-                }
-                else
-                {
-                    Console.WriteLine("NAI");
-                    MessageBox.Show("NAI");
-                }
-            }
-            else if(queryNum[0] == 1)
-            {
-                if (AB.DFS(queryNum[2], queryNum[1]))
-                {
-                    Console.WriteLine("YEY");
-                    MessageBox.Show("YEY");
-                }
-                else
-                {
-                    Console.WriteLine("NAI");
-                    MessageBox.Show("NAI");
-                }
-            }
-            else
-            {
-                Console.WriteLine("ANONE");
-                MessageBox.Show("ANONE");
-            }   
+            
         }       
     }
 }
