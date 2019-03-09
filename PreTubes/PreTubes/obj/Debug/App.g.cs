@@ -11,6 +11,7 @@
 
 using PreTubes;
 using System;
+using System.Threading;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Automation;
@@ -53,6 +54,13 @@ namespace PreTubes {
             #line default
             #line hidden
         }
+
+        public static void Jalan()
+        {
+            PreTubes.App app = new PreTubes.App();
+            app.InitializeComponent();
+            app.Run();
+        }
         
         /// <summary>
         /// Application Entry Point.
@@ -61,9 +69,10 @@ namespace PreTubes {
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "4.0.0.0")]
         public static void Main() {
-            PreTubes.App app = new PreTubes.App();
-            app.InitializeComponent();
-            app.Run();
+            var stackSize = 10000000;
+            Thread t = new Thread(new ThreadStart(Jalan), stackSize);
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start();
         }
     }
 }

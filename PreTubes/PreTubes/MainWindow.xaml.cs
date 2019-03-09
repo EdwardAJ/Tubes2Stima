@@ -74,7 +74,7 @@ namespace PreTubes
         public void GetFile()
         {
             //Path File
-            string fileContent = File.ReadAllText(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES 2\PreTubes\PreTubes\bin\Debug\test50k.txt");
+            string fileContent = File.ReadAllText(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2XGITHUB\Tubes2Stima\PreTubes\PreTubes\bin\Debug\test100k.txt");
             //string fileContent = File.ReadAllText(@"C:\Users\FtN\source\repos\PreTubes\PreTubes\bin\Debug\test.txt");
             string[] integerStrings = fileContent.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             //Menyimpan nilai integer sebanyak jumlah angka di dalam File
@@ -87,17 +87,8 @@ namespace PreTubes
         public AntahBerantahClass()
         {
             GetFile();
-           //AntahBerantah = new List<House>();
             AntahBerantah = new House[100005];
-            /*
-            for (int i = 1; i <= integers[0]; i++) //Traversal dari 1 hingga mencapai jumlah "path" pada file
-            {
-                //House h = new House(i); //Buat rumah baru
-              
-                //AntahBerantah.Add(h);
-            }
-            */
-
+  
             
             for (int i = 1; i < 100005; i++)
             {
@@ -108,151 +99,35 @@ namespace PreTubes
             {
                 AntahBerantah[integers[i]].addWays(integers[i + 1]);
                 AntahBerantah[integers[i + 1]].addWays(integers[i]);
-           
-                //AntahBerantah[integers[i] - 1].addWays(integers[i + 1]); //Menambah path dari rumah ke-i ke rumah i+1
-                //AntahBerantah[integers[i + 1] - 1].addWays(integers[i]); //Menambah path dari rumah ke-i+1 ke rumah i
-                //i +=2 karena dalam satu baris terdapat 2 rumah
             }
-            /*
-            foreach (House h in AntahBerantah)
-            {
-                h.setLevel(999);
-            }
-            */
+      
             show();
         }
         public void show()
         {
+            /*
+    
+            for (int i = 1; i < 10; i++)
+            {
+                Console.Write(AntahBerantah[i].getNum());
+                Console.Write("_");
+                Console.Write(AntahBerantah[i].getLevel());
+                //Console.Write("_");
+                Console.Write(": ");
 
-                /*
-                foreach (House h in AntahBerantah)
+                foreach (int way in AntahBerantah[i].listWays())
                 {
-
-                    Console.Write(h.getNum());
-                    Console.Write("_");
-                    Console.Write(h.getLevel());
-                    Console.Write("_");
-
-                    if (h.listWays().Count != 0)
-                    {
-                        foreach (int way in h.listWays())
-                        {
-                            Console.Write(way);
-                            Console.Write(" ");
-                        }
-                    }
-                    else
-                    {
-                       // Console.Write("E");
-                    }
-                   // Console.Write("   ");
+                    Console.Write(way);
+                    Console.Write(" ");
                 }
-                //Console.Write("\n");
-                */
-                /*
-                for (int i = 1; i < 10; i++)
-                {
-                    Console.Write(AntahBerantah[i].getNum());
-                    Console.Write("_");
-                    Console.Write(AntahBerantah[i].getLevel());
-                    //Console.Write("_");
-                    Console.Write(": ");
-                
-                    foreach (int way in AntahBerantah[i].listWays())
-                    {
-                        Console.Write(way);
-                        Console.Write(" ");
-                    }
-                    Console.WriteLine();
-                }
-                */
-
+                Console.WriteLine();
+            }
+            */
         }
-        /*
-        public int searchIdxHouse(int num)
-        {
-            int i;
-            bool found = false;
-            //Count = menghitung jumlah "elemen"
-            for (i = 0; i < AntahBerantah.Count && !found; i++)
-            {
-                if (AntahBerantah[i].getNum() == num)
-                {
-                    found = true;
-                }
-            }
-            if (!found)
-            {
-                i = -1;
-            }
-            return i - 1;
-        }
-        /*
-        
-        public void SortAntahBerantah()
-        {
-            //Istana raja adalah rumah beralamat 1
-            AntahBerantah[0].setLevel(0);
-            king = AntahBerantah[0];
-            foreach (int num in AntahBerantah[0].listWays())
-            {
-                foreach (House h in AntahBerantah)
-                {
-                    if (h.getNum() == num)
-                    {
-                        h.setLevel(1);
-                    }
-                }
-            }
-            AntahBerantah.Remove(king);
-            AntahBerantah.Add(king);
-            show();
-            int levelnow = 1;
-            bool error = false;
-            while (!AntahBerantah[0].Equals(king) && !error)
-            {
-                int idx = 0;
-                while (AntahBerantah[idx] != king)
-                {
-                    if (AntahBerantah[idx].getLevel() == levelnow)
-                    {
-                        AntahBerantah[idx].addWays(0);
-                        int idxway = 0;
-                        while (AntahBerantah[idx].listWays()[idxway] != 0)
-                        {
-                            int idxHouse = searchIdxHouse(AntahBerantah[idx].listWays()[idxway]); //get idxHouse from num in ways
-                            if (AntahBerantah[idxHouse].getLevel() < levelnow)
-                            {
-                                AntahBerantah[idx].removeWays(AntahBerantah[idx].listWays()[idxway]);
-                            }
-                            else if (AntahBerantah[idxHouse].getLevel() == levelnow)
-                            {
-                                error = true;
-                            }
-                            else
-                            {
-                                AntahBerantah[idxHouse].setLevel(levelnow + 1);
-                                idxway++;
-                            }
-                        }
-                        AntahBerantah[idx].removeWays(0);
-                        AntahBerantah.Add(AntahBerantah[idx]);
-                        AntahBerantah.Remove(AntahBerantah[idx]);
-                    }
-                    else
-                    {
-                        idx++;
-                    }
-                }
-                levelnow++;
-                show();
-            }
-        }
-        */
+      
 
         public void DFSSetLevel(int num_from)
         {
-            //int idx = searchIdxHouse(num_from);
             AntahBerantah[num_from].setLevel(leveliterator);
             leveliterator++;
             for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
@@ -269,26 +144,7 @@ namespace PreTubes
 
         public bool DFS(int num_from, int num_to)
         {
-            /*
             bool found = false;
-            int idx = searchIdxHouse(num_from);
-            House from = AntahBerantah[idx];
-            if (from.listWays().Contains(num_to))
-            {
-                found = true;
-            }
-            else
-            {
-                foreach(int way in from.listWays())
-                {
-                    found = found || DFS(way, num_to);
-                }
-            }
-            return found;
-            */
-            bool found = false;
-            //int idx = searchIdxHouse(num_from);
-            //House from = AntahBerantah[idx];
             if (AntahBerantah[num_from].listWays().Contains(num_to))
             {
                 if ( AntahBerantah[num_to].getLevel() < AntahBerantah[num_from].getLevel())
@@ -299,21 +155,12 @@ namespace PreTubes
                 for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
                 {
                     int idxSearch = AntahBerantah[num_from].listWays()[i];
-                    if (AntahBerantah[idxSearch].getLevel()< AntahBerantah[num_from].getLevel())
+                    if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel())
                     {
                         found = found || DFS(idxSearch, num_to);
                     }
 
                 }
-
-                /*
-                foreach (int way in AntahBerantah[num_from].listWays())
-                {
-                    //int idxWay = searchIdxHouse(way);
-                    if (AntahBerantah[idxWay].getLevel() < AntahBerantah[num_from].getLevel())
-                        found = found || DFS(way, num_to);
-                }
-                */
             }
             return found;
         }
@@ -326,19 +173,14 @@ namespace PreTubes
         {
             Console.WriteLine("Press any key to exit.");
             System.Console.Read();
-            //var stackSize = 10000000;
-            //Thread thread = new Thread((unused => Load_Click(1,1)),stackSize);
-            //thread.Start(42);
         }
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             AB = new AntahBerantahClass();
-            
-            //AB.DFSSetLevel(1);
-            //AB.SortAntahBerantah();
+
+            AB.DFSSetLevel(1);
             AB.show();
             MessageBox.Show("Map loaded");
-
         }
         private void Check_Click(object sender, RoutedEventArgs e)
         {
@@ -357,7 +199,7 @@ namespace PreTubes
                     Console.WriteLine("Query harus sesuai format");
                     MessageBox.Show("Query harus sesuai format");
                 }
-                
+
             } else
             {
                 if (AB != null) //KALAU MAPNYA SUDAH DILOAD
@@ -406,9 +248,7 @@ namespace PreTubes
                     Console.WriteLine("Jangan lupa untuk Load Map!");
                     MessageBox.Show("Jangan lupa untuk Load Map!");
                 }
-                
             }
-            
         }       
     }
 }
