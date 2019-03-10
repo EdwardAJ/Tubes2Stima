@@ -1,1 +1,7 @@
-Mohon sabar Bu/Pak, sedang dibuat.
+Mohon sabar Bu/Pak, program ini sedang dalam "maintenance"
+.
+.
+.
+.
+.
+Bikin aja belum 
