@@ -29,6 +29,7 @@ namespace PreTubes
         private int num;
         private int level;
         private List<int> ways;
+        //public int visited = 0;
         
         public House(int n)
         {
@@ -66,6 +67,8 @@ namespace PreTubes
     }
     public class AntahBerantahClass
     {
+        public List<int> urutanSimpul = new List<int>();
+        public List<int> urutanSimpulFinal = new List<int>();
         public int[] integers;
         public House king;
         public House[] AntahBerantah;
@@ -74,7 +77,7 @@ namespace PreTubes
         public void GetFile()
         {
             //Path File
-            string fileContent = File.ReadAllText(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2XGITHUB\Tubes2Stima\PreTubes\PreTubes\bin\Debug\test100k.txt");
+            string fileContent = File.ReadAllText(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2XGITHUB\Tubes2Stima\PreTubes\PreTubes\bin\Debug\test.txt");
             //string fileContent = File.ReadAllText(@"C:\Users\FtN\source\repos\PreTubes\PreTubes\bin\Debug\test.txt");
             string[] integerStrings = fileContent.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             //Menyimpan nilai integer sebanyak jumlah angka di dalam File
@@ -103,7 +106,7 @@ namespace PreTubes
       
             show();
         }
-        public void show()
+        public void show() //This is a function for debugging.
         {
             /*
     
@@ -126,9 +129,9 @@ namespace PreTubes
         }
       
 
-        public void DFSSetLevel(int num_from)
+        public void DFSSetLevel(int num_from) //Prosedur untuk setLevel setiap simpul.
         {
-            AntahBerantah[num_from].setLevel(leveliterator);
+            AntahBerantah[num_from].setLevel(leveliterator); 
             leveliterator++;
             for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
             {
@@ -145,21 +148,40 @@ namespace PreTubes
         public bool DFS(int num_from, int num_to)
         {
             bool found = false;
-            if (AntahBerantah[num_from].listWays().Contains(num_to))
+            if (AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau suatu simpul terhubung LANGSUNG dengan num_to
             {
+                urutanSimpul.Add(num_from);
+                //cek apakah simpul num_to menjauh.
                 if ( AntahBerantah[num_to].getLevel() < AntahBerantah[num_from].getLevel())
+                {
+                    urutanSimpul.Add(num_to);
+                    
+                    foreach (int i in urutanSimpul)
+                    {
+                        urutanSimpulFinal.Add(i);
+                    }
+     
+                    //urutanSimpul.ForEach(Console.Write) ;
                     found = true;
+                    urutanSimpul.Remove(num_to);
+                    /*
+                    Console.Write("TesLAGI: ");
+                    urutanSimpulFinal.ForEach(Console.Write);
+                    */
+                }
+                urutanSimpul.Remove(num_from);
             }
             else
-            {
+            {   //rekurens
                 for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
                 {
+                    urutanSimpul.Add(num_from);
                     int idxSearch = AntahBerantah[num_from].listWays()[i];
-                    if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel())
+                    if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel()) //cek apakah simpul num_to menjauh.
                     {
-                        found = found || DFS(idxSearch, num_to);
+                        found = found || DFS(idxSearch, num_to); 
                     }
-
+                    urutanSimpul.Remove(num_from);
                 }
             }
             return found;
@@ -177,7 +199,6 @@ namespace PreTubes
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             AB = new AntahBerantahClass();
-
             AB.DFSSetLevel(1);
             AB.show();
             MessageBox.Show("Map loaded");
@@ -216,6 +237,9 @@ namespace PreTubes
                         {
                             Console.WriteLine("YA");
                             MessageBox.Show("YA");
+                            Console.WriteLine("Urutan Simpul yang Anda lalui:");
+                            AB.urutanSimpulFinal.ForEach(Console.WriteLine);
+                            AB.urutanSimpulFinal.Clear();
                         }
                         else
                         {
@@ -230,6 +254,10 @@ namespace PreTubes
                         {
                             Console.WriteLine("YA");
                             MessageBox.Show("YA");
+                            Console.WriteLine("Urutan Simpul yang Anda lalui:");
+                            AB.urutanSimpulFinal.Reverse();
+                            AB.urutanSimpulFinal.ForEach(Console.WriteLine);
+                            AB.urutanSimpulFinal.Clear();
                         }
                         else
                         {
