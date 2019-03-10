@@ -91,25 +91,21 @@ namespace PreTubes
         {
             GetFile();
             AntahBerantah = new House[100005];
-  
-            
             for (int i = 1; i < 100005; i++)
             {
                 AntahBerantah[i] = new House(i);
             }
-            
+
             for (int i = 1; i < integers.Length; i += 2)
             {
                 AntahBerantah[integers[i]].addWays(integers[i + 1]);
                 AntahBerantah[integers[i + 1]].addWays(integers[i]);
             }
-      
             show();
         }
         public void show() //This is a function for debugging.
         {
             /*
-    
             for (int i = 1; i < 10; i++)
             {
                 Console.Write(AntahBerantah[i].getNum());
@@ -127,7 +123,6 @@ namespace PreTubes
             }
             */
         }
-      
 
         public void DFSSetLevel(int num_from) //Prosedur untuk setLevel setiap simpul.
         {
@@ -199,8 +194,8 @@ namespace PreTubes
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             AB = new AntahBerantahClass();
-            AB.DFSSetLevel(1);
-            AB.show();
+            AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
+            //AB.show();
             MessageBox.Show("Map loaded");
         }
         private void Check_Click(object sender, RoutedEventArgs e)
@@ -249,7 +244,6 @@ namespace PreTubes
                     }
                     else if (queryNum[0] == 1)
                     {
-                        
                         if (AB.DFS(queryNum[1], queryNum[2]))
                         {
                             Console.WriteLine("YA");
