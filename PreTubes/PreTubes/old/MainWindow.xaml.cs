@@ -29,7 +29,8 @@ namespace PreTubes
         private int num;
         private int level;
         private List<int> ways;
-
+        //public int visited = 0;
+        
         public House(int n)
         {
             num = n;
@@ -51,10 +52,6 @@ namespace PreTubes
         {
             level = l;
         }
-        public int getElmt(int i)
-        {
-            return ways[i];
-        }
         public List<int> listWays()
         {
             return ways;
@@ -73,12 +70,15 @@ namespace PreTubes
         public List<int> urutanSimpul = new List<int>();
         public List<int> urutanSimpulFinal = new List<int>();
         public int[] integers;
-        public List<House> AntahBerantah;
+        public House king;
+        public House[] AntahBerantah;
+        //public List<House> AntahBerantah;
         public int leveliterator = 1;
-        public void GetFile(string FilePath)
+        public void GetFile()
         {
             //Path File
-            string fileContent = File.ReadAllText(@FilePath);
+            string fileContent = File.ReadAllText(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2XGITHUB\Tubes2Stima\PreTubes\PreTubes\bin\Debug\test.txt");
+            //string fileContent = File.ReadAllText(@"C:\Users\FtN\source\repos\PreTubes\PreTubes\bin\Debug\test.txt");
             string[] integerStrings = fileContent.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             //Menyimpan nilai integer sebanyak jumlah angka di dalam File
             integers = new int[integerStrings.Length];
@@ -87,15 +87,15 @@ namespace PreTubes
                 integers[n] = int.Parse(integerStrings[n]);
             }
         }
-        public AntahBerantahClass(string FilePath)
+        public AntahBerantahClass()
         {
-            GetFile(FilePath);
-            AntahBerantah = new List<House>();
-            for (int i = 0; i <= integers[0]; i++)
+            GetFile();
+            AntahBerantah = new House[100005];
+            for (int i = 1; i < 100005; i++)
             {
-                House h = new House(i);
-                AntahBerantah.Add(h);
+                AntahBerantah[i] = new House(i);
             }
+
             for (int i = 1; i < integers.Length; i += 2)
             {
                 AntahBerantah[integers[i]].addWays(integers[i + 1]);
@@ -103,52 +103,40 @@ namespace PreTubes
             }
             show();
         }
-        public void show() //Fungsi untuk debugging.
+        public void show() //This is a function for debugging.
         {
-            
-            foreach (House h in AntahBerantah)
+            /*
+            for (int i = 1; i < 10; i++)
             {
-                Console.Write(h.getNum());
+                Console.Write(AntahBerantah[i].getNum());
                 Console.Write("_");
-                Console.Write(h.getLevel());
-                Console.Write("_");
-                if (h.listWays().Count != 0)
+                Console.Write(AntahBerantah[i].getLevel());
+                //Console.Write("_");
+                Console.Write(": ");
+
+                foreach (int way in AntahBerantah[i].listWays())
                 {
-                    foreach (int way in h.listWays())
-                    {
-                        Console.Write(way);
-                    }
+                    Console.Write(way);
+                    Console.Write(" ");
                 }
-                else
-                {
-                    Console.Write("E");
-                }
-                Console.Write("   ");
+                Console.WriteLine();
             }
-            Console.WriteLine();
+            */
         }
 
         public void DFSSetLevel(int num_from) //Prosedur untuk setLevel setiap simpul.
         {
-            AntahBerantah[num_from].setLevel(leveliterator);
+            AntahBerantah[num_from].setLevel(leveliterator); 
             leveliterator++;
-            AntahBerantah[num_from].addWays(0);
-            int i = 0;
-            int idxSearch;
-            while (AntahBerantah[num_from].getElmt(i) != 0)
-            {//untuk setiap rumah (rumahSearch) yang terhubung dengan rumah yang sedang diperiksa (rumahNow)
-                idxSearch = AntahBerantah[num_from].getElmt(i);
-                if (AntahBerantah[idxSearch].getLevel() == 0) //kalau (rumahSearch) belum dikunjungi
+            for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
+            {
+                int idxSearch = AntahBerantah[num_from].listWays()[i];
+                if (AntahBerantah[idxSearch].getLevel() == 0)
                 {
-                    DFSSetLevel(AntahBerantah[idxSearch].getNum()); //lakukan setLevel pada rumah tersebut
-                    i++;
+                    DFSSetLevel(AntahBerantah[idxSearch].getNum());
                 }
-                else //kalau (rumahSearch) sudah dikunjungi
-                {
-                    AntahBerantah[num_from].removeWays(idxSearch); //hapus dari daftar rumah yang terhubung dengan (rumahNow)
-                }
+                
             }
-            AntahBerantah[num_from].removeWays(0);
             leveliterator--;
         }
 
@@ -158,21 +146,36 @@ namespace PreTubes
             if (AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau suatu simpul terhubung LANGSUNG dengan num_to
             {
                 urutanSimpul.Add(num_from);
-                urutanSimpul.Add(num_to);
-                foreach (int i in urutanSimpul)
+                //cek apakah simpul num_to menjauh.
+                if ( AntahBerantah[num_to].getLevel() < AntahBerantah[num_from].getLevel())
                 {
-                    urutanSimpulFinal.Add(i);
+                    urutanSimpul.Add(num_to);
+                    
+                    foreach (int i in urutanSimpul)
+                    {
+                        urutanSimpulFinal.Add(i);
+                    }
+     
+                    //urutanSimpul.ForEach(Console.Write) ;
+                    found = true;
+                    urutanSimpul.Remove(num_to);
+                    /*
+                    Console.Write("TesLAGI: ");
+                    urutanSimpulFinal.ForEach(Console.Write);
+                    */
                 }
-                found = true;
-                urutanSimpul.Remove(num_to);
                 urutanSimpul.Remove(num_from);
             }
             else
             {   //rekurens
-                foreach (int idxSearch in AntahBerantah[num_from].listWays())
+                for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
                 {
                     urutanSimpul.Add(num_from);
-                    found = found || DFS(idxSearch, num_to);
+                    int idxSearch = AntahBerantah[num_from].listWays()[i];
+                    if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel()) //cek apakah simpul num_to menjauh.
+                    {
+                        found = found || DFS(idxSearch, num_to); 
+                    }
                     urutanSimpul.Remove(num_from);
                 }
             }
@@ -182,7 +185,7 @@ namespace PreTubes
     public partial class MainWindow : Window
     {
         public AntahBerantahClass AB;
-
+       
         public MainWindow()
         {
             Console.WriteLine("Press any key to exit.");
@@ -190,10 +193,9 @@ namespace PreTubes
         }
         private void Load_Click(object sender, RoutedEventArgs e)
         {
-            string FilePath = PathFile.Text;
-            AB = new AntahBerantahClass(FilePath);
+            AB = new AntahBerantahClass();
             AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
-            AB.show();
+            //AB.show();
             MessageBox.Show("Map loaded");
         }
         private void Check_Click(object sender, RoutedEventArgs e)
@@ -208,14 +210,13 @@ namespace PreTubes
                 {
                     Console.WriteLine("Query tidak boleh kosong");
                     MessageBox.Show("Query tidak boleh kosong");
-                }
-                else
+                } else
                 {
                     Console.WriteLine("Query harus sesuai format");
                     MessageBox.Show("Query harus sesuai format");
                 }
-            }
-            else
+
+            } else
             {
                 if (AB != null) //KALAU MAPNYA SUDAH DILOAD
                 {
@@ -227,12 +228,11 @@ namespace PreTubes
                     //Conditinal untuk angka pertama pada query : '0' atau '1':
                     if (queryNum[0] == 0)
                     {
-                        if (AB.DFS(queryNum[1], queryNum[2])) //DFS(from,to)
+                        if (AB.DFS(queryNum[2], queryNum[1])) //DFS(from,to)
                         {
                             Console.WriteLine("YA");
                             MessageBox.Show("YA");
                             Console.WriteLine("Urutan Simpul yang Anda lalui:");
-                            AB.urutanSimpulFinal.Reverse();
                             AB.urutanSimpulFinal.ForEach(Console.WriteLine);
                             AB.urutanSimpulFinal.Clear();
                         }
@@ -244,11 +244,12 @@ namespace PreTubes
                     }
                     else if (queryNum[0] == 1)
                     {
-                        if (AB.DFS(queryNum[2], queryNum[1]))
+                        if (AB.DFS(queryNum[1], queryNum[2]))
                         {
                             Console.WriteLine("YA");
                             MessageBox.Show("YA");
                             Console.WriteLine("Urutan Simpul yang Anda lalui:");
+                            AB.urutanSimpulFinal.Reverse();
                             AB.urutanSimpulFinal.ForEach(Console.WriteLine);
                             AB.urutanSimpulFinal.Clear();
                         }
@@ -270,6 +271,6 @@ namespace PreTubes
                     MessageBox.Show("Jangan lupa untuk Load Map!");
                 }
             }
-        }
+        }       
     }
 }

@@ -12,13 +12,14 @@
             <ColumnDefinition Width="13*"/>
             <ColumnDefinition Width="713*"/>
         </Grid.ColumnDefinitions>
-        <Button Content="LOAD MAP" HorizontalAlignment="Left" Margin="516,68,0,0" VerticalAlignment="Top" Width="96" Click="Load_Click" Grid.Column="2" Height="22" Background="#FF002638" Foreground="#FF00DEFF" BorderBrush="#FF00DEFF" FontFamily="Avenir Next LT Pro" FontWeight="Bold" FontSize="10"/>
-        <TextBox x:Name="Query" Height="33" HorizontalAlignment="Left" Margin="366,116,0,0" VerticalAlignment="Top" Width="145" Grid.Column="2" />
-
+        <Button Content="LOAD MAP" HorizontalAlignment="Left" Margin="539,335,0,0" VerticalAlignment="Top" Width="96" Click="Load_Click" Grid.Column="2" Height="22" Background="#FF002638" Foreground="#FF00DEFF" BorderBrush="#FF00DEFF" FontFamily="Avenir Next LT Pro" FontWeight="Bold" FontSize="10"/>
+        <TextBox x:Name="Query" Height="33" HorizontalAlignment="Left" Margin="539,108,0,0" VerticalAlignment="Top" Width="145" Grid.Column="2" />
         <Label Content="WELCOME TO AINGCUPU APP" Height="28" HorizontalAlignment="Left" Margin="425,35,0,0" Name="labelq" VerticalAlignment="Top" FontFamily="Avenir Next LT Pro" Background="#FF002638" Foreground="#FF00DEFF" FontWeight="Bold" FontSize="10" Grid.Column="2" d:IsLocked="True" />
         <Label Content="CHOOSE ONE OF THE OPTIONS BELOW!" Height="28" HorizontalAlignment="Left" Margin="360,40,0,0" x:Name="labelq_Copy" VerticalAlignment="Top" FontFamily="Avenir Next LT Pro" Background="#FF002638" Foreground="#FF00DEFF" Grid.Column="2" Width="321" FontWeight="Bold" FontSize="13" />
-        <Label Content="OR TYPE" Height="22" HorizontalAlignment="Left" Margin="363,93,0,0" x:Name="labelq_Copy1" VerticalAlignment="Top" FontFamily="Avenir Next LT Pro" Background="#FF002638" Foreground="#FF00DEFF" Grid.Column="2" FontWeight="Bold" Width="51" FontSize="10" />
-        <Button Content="INSERT QUERY FILE" Height="22" HorizontalAlignment="Left" Margin="366,68,0,0" x:Name="Check_Copy" VerticalAlignment="Top" Width="141" Click="Check_Click" Grid.Column="2" Foreground="#FF00DEFF" FontFamily="Avenir Next LT Pro" BorderBrush="#FF00DEFF" Background="#FF002638" FontWeight="Bold" FontSize="10" />
-        <Button Content="CHECK" Height="20" HorizontalAlignment="Left" Margin="366,157,0,0" x:Name="Check_Copy1" VerticalAlignment="Top" Width="68" Click="Check_Click" Grid.Column="2" Foreground="#FF00DEFF" FontFamily="Avenir Next LT Pro" BorderBrush="#FF00DEFF" Background="#FF002638" FontWeight="Bold" FontSize="10" />
+        <Label Content="OR TYPE" Height="22" HorizontalAlignment="Left" Margin="539,86,0,0" x:Name="labelq_Copy1" VerticalAlignment="Top" FontFamily="Avenir Next LT Pro" Background="#FF002638" Foreground="#FF00DEFF" Grid.Column="2" FontWeight="Bold" Width="51" FontSize="10" />
+        <Button Content="INSERT QUERY FILE" Height="69" HorizontalAlignment="Left" Margin="360,86,0,0" x:Name="Check_Copy" VerticalAlignment="Top" Width="141" Click="Check_Click" Grid.Column="2" Foreground="#FF00DEFF" FontFamily="Avenir Next LT Pro" BorderBrush="#FF00DEFF" Background="#FF002638" FontWeight="Bold" FontSize="10" />
+        <Button Content="CHECK" Height="20" HorizontalAlignment="Left" Margin="539,174,0,0" x:Name="Check_Copy1" VerticalAlignment="Top" Width="68" Click="Check_Click" Grid.Column="2" Foreground="#FF00DEFF" FontFamily="Avenir Next LT Pro" BorderBrush="#FF00DEFF" Background="#FF002638" FontWeight="Bold" FontSize="10" />
+        <TextBox x:Name="PathFile" Height="33" HorizontalAlignment="Left" Margin="539,288,0,0" VerticalAlignment="Top" Width="145" Grid.Column="2" />
+        <Label Content="PATH FILE" Height="22" HorizontalAlignment="Left" Margin="539,261,0,0" x:Name="labelq_Copy2" VerticalAlignment="Top" FontFamily="Avenir Next LT Pro" Background="#FF002638" Foreground="#FF00DEFF" Grid.Column="2" FontWeight="Bold" Width="60" FontSize="10" />
     </Grid>
 </Window>
