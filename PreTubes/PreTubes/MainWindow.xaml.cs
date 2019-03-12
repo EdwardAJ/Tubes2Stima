@@ -178,6 +178,67 @@ namespace PreTubes
             }
             return found;
         }
+        public void eksekusi(string[] queryString, int[] queryNum)
+        {
+            for (int i = 0; i < queryString.Length; i++)
+            {
+                queryNum[i] = int.Parse(queryString[i]);
+            }
+
+            //Conditinal untuk angka pertama pada query : '0' atau '1':
+            if (queryNum[0] == 0)
+            {
+                if (DFS(queryNum[2], queryNum[1])) //DFS(from,to)
+                {
+                    Console.WriteLine("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    MessageBox.Show("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    Console.WriteLine("Urutan Simpul yang Anda lalui:");
+                    urutanSimpulFinal.ForEach(Console.WriteLine);
+                    urutanSimpulFinal.Clear();
+                }
+                else
+                {
+                    Console.WriteLine("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    MessageBox.Show("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                }
+            }
+            else if (queryNum[0] == 1)
+            {
+                if (DFS(queryNum[1], queryNum[2]))
+                {
+                    Console.WriteLine("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    MessageBox.Show("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    Console.WriteLine("Urutan Simpul yang Anda lalui:");
+                    urutanSimpulFinal.Reverse();
+                    urutanSimpulFinal.ForEach(Console.WriteLine);
+                    urutanSimpulFinal.Clear();
+                }
+                else
+                {
+                    Console.WriteLine("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    MessageBox.Show("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Query harus sesuai format");
+                MessageBox.Show("Query harus sesuai format");
+            }
+        }
+        public void insertQuery()
+        {
+            StreamReader sr = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt");
+            string temp = sr.ReadLine();
+            int n = int.Parse(temp);
+            for (int i = 0; i < n; i++)
+            {
+                temp = sr.ReadLine();
+                string[] queryString = temp.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                int[] queryNum = new int[queryString.Length];
+                eksekusi(queryString, queryNum);
+            }
+            sr.Close();
+        }
     }
     public partial class MainWindow : Window
     {
@@ -195,6 +256,20 @@ namespace PreTubes
             AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
             AB.show();
             MessageBox.Show("Map loaded");
+        }
+        private void Insert_Query_File_Click(object sender, RoutedEventArgs e)
+        {
+            if (AB != null)
+            {
+                AB.insertQuery();
+                Console.WriteLine("Insert Query selesai dieksekusi");
+                MessageBox.Show("Insert Query selesai dieksekusi");
+            }
+            else
+            {
+                Console.WriteLine("Jangan lupa untuk Load Map!");
+                MessageBox.Show("Jangan lupa untuk Load Map!");
+            }
         }
         private void Check_Click(object sender, RoutedEventArgs e)
         {
@@ -219,50 +294,7 @@ namespace PreTubes
             {
                 if (AB != null) //KALAU MAPNYA SUDAH DILOAD
                 {
-                    for (int i = 0; i < queryString.Length; i++)
-                    {
-                        queryNum[i] = int.Parse(queryString[i]);
-                    }
-
-                    //Conditinal untuk angka pertama pada query : '0' atau '1':
-                    if (queryNum[0] == 0)
-                    {
-                        if (AB.DFS(queryNum[1], queryNum[2])) //DFS(from,to)
-                        {
-                            Console.WriteLine("YA");
-                            MessageBox.Show("YA");
-                            Console.WriteLine("Urutan Simpul yang Anda lalui:");
-                            AB.urutanSimpulFinal.Reverse();
-                            AB.urutanSimpulFinal.ForEach(Console.WriteLine);
-                            AB.urutanSimpulFinal.Clear();
-                        }
-                        else
-                        {
-                            Console.WriteLine("TIDAK");
-                            MessageBox.Show("TIDAK");
-                        }
-                    }
-                    else if (queryNum[0] == 1)
-                    {
-                        if (AB.DFS(queryNum[2], queryNum[1]))
-                        {
-                            Console.WriteLine("YA");
-                            MessageBox.Show("YA");
-                            Console.WriteLine("Urutan Simpul yang Anda lalui:");
-                            AB.urutanSimpulFinal.ForEach(Console.WriteLine);
-                            AB.urutanSimpulFinal.Clear();
-                        }
-                        else
-                        {
-                            Console.WriteLine("TIDAK");
-                            MessageBox.Show("TIDAK");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Query harus sesuai format");
-                        MessageBox.Show("Query harus sesuai format");
-                    }
+                    AB.eksekusi(queryString, queryNum);
                 }
                 else
                 {
