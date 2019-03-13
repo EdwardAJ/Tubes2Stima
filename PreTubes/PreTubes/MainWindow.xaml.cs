@@ -190,24 +190,24 @@ namespace PreTubes
             {
                 if (DFS(queryNum[2], queryNum[1])) //DFS(from,to)
                 {
-                    Console.WriteLine("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    MessageBox.Show("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
                     Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     urutanSimpulFinal.ForEach(Console.WriteLine);
                     urutanSimpulFinal.Clear();
                 }
                 else
                 {
-                    Console.WriteLine("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    MessageBox.Show("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                 }
             }
             else if (queryNum[0] == 1)
             {
                 if (DFS(queryNum[1], queryNum[2]))
                 {
-                    Console.WriteLine("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    MessageBox.Show("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
                     Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     urutanSimpulFinal.Reverse();
                     urutanSimpulFinal.ForEach(Console.WriteLine);
@@ -215,8 +215,8 @@ namespace PreTubes
                 }
                 else
                 {
-                    Console.WriteLine("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    MessageBox.Show("Jawaban pertannyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                 }
             }
             else
@@ -227,8 +227,8 @@ namespace PreTubes
         }
         public void insertQuery()
         {
-            StreamReader sr = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt");
-            string temp = sr.ReadLine();
+            StreamReader sr = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
+            string temp = sr.ReadLine(); 
             int n = int.Parse(temp);
             for (int i = 0; i < n; i++)
             {
