@@ -105,7 +105,7 @@ namespace PreTubes
         }
         public void show() //Fungsi untuk debugging.
         {
-            
+            /*
             foreach (House h in AntahBerantah)
             {
                 Console.Write(h.getNum());
@@ -126,58 +126,72 @@ namespace PreTubes
                 Console.Write("   ");
             }
             Console.WriteLine();
+            */
         }
 
-        public void DFSSetLevel(int num_from) //Prosedur untuk setLevel setiap simpul.
+        public void DFSSetLevel(int num_from)
         {
             AntahBerantah[num_from].setLevel(leveliterator);
             leveliterator++;
-            AntahBerantah[num_from].addWays(0);
-            int i = 0;
-            int idxSearch;
-            while (AntahBerantah[num_from].getElmt(i) != 0)
-            {//untuk setiap rumah (rumahSearch) yang terhubung dengan rumah yang sedang diperiksa (rumahNow)
-                idxSearch = AntahBerantah[num_from].getElmt(i);
-                if (AntahBerantah[idxSearch].getLevel() == 0) //kalau (rumahSearch) belum dikunjungi
+            for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
+            {
+                int idxSearch = AntahBerantah[num_from].listWays()[i];
+                if (AntahBerantah[idxSearch].getLevel() == 0) //Kalau belum dikunjungi
                 {
-                    DFSSetLevel(AntahBerantah[idxSearch].getNum()); //lakukan setLevel pada rumah tersebut
-                    i++;
+                    DFSSetLevel(AntahBerantah[idxSearch].getNum());
                 }
-                else //kalau (rumahSearch) sudah dikunjungi
-                {
-                    AntahBerantah[num_from].removeWays(idxSearch); //hapus dari daftar rumah yang terhubung dengan (rumahNow)
-                }
+
             }
-            AntahBerantah[num_from].removeWays(0);
             leveliterator--;
         }
+
 
         public bool DFS(int num_from, int num_to)
         {
             bool found = false;
-            if (AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau suatu simpul terhubung LANGSUNG dengan num_to
-            {
-                urutanSimpul.Add(num_from);
-                urutanSimpul.Add(num_to);
-                foreach (int i in urutanSimpul)
-                {
-                    urutanSimpulFinal.Add(i);
-                }
-                found = true;
-                urutanSimpul.Remove(num_to);
-                urutanSimpul.Remove(num_from);
-            }
-            else
-            {   //rekurens
-                foreach (int idxSearch in AntahBerantah[num_from].listWays())
+            
+                if (AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau suatu simpul terhubung LANGSUNG dengan num_to
                 {
                     urutanSimpul.Add(num_from);
-                    found = found || DFS(idxSearch, num_to);
+                    //cek apakah simpul num_to menjauh.
+                    if (AntahBerantah[num_to].getLevel() < AntahBerantah[num_from].getLevel())
+                    {
+                        urutanSimpul.Add(num_to);
+
+                        foreach (int i in urutanSimpul)
+                        {
+                            urutanSimpulFinal.Add(i);
+                        }
+
+                        //urutanSimpul.ForEach(Console.Write) ;
+                        found = true;
+                        urutanSimpul.Remove(num_to);
+                        /*
+                        Console.Write("TesLAGI: ");
+                        urutanSimpulFinal.ForEach(Console.Write);
+                        */
+                    }
                     urutanSimpul.Remove(num_from);
                 }
-            }
-            return found;
+                else
+                
+                {   //rekurens
+                        for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
+                        {
+                            urutanSimpul.Add(num_from);
+                            int idxSearch = AntahBerantah[num_from].listWays()[i];
+                           
+                            if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel()) //cek apakah simpul num_to menjauh.
+                               found = found || DFS(idxSearch, num_to);
+                               
+
+                            urutanSimpul.Remove(num_from);
+                        }
+                }
+             return found;
         }
+       
+
         public void eksekusi(string[] queryString, int[] queryNum, string[] answer)
         {
             for (int i = 0; i < queryString.Length; i++)
@@ -190,17 +204,17 @@ namespace PreTubes
             {
                 if (DFS(queryNum[2], queryNum[1])) //DFS(from,to)
                 {
-                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    Console.WriteLine("Urutan Simpul yang Anda lalui:");
-                    urutanSimpulFinal.ForEach(Console.WriteLine);
+                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    //Console.WriteLine("Urutan Simpul yang Anda lalui:");
+                    //urutanSimpulFinal.ForEach(Console.WriteLine);
                     urutanSimpulFinal.Clear();
                     answer[0] = "YA";
                 }
                 else
                 {
-                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     answer[0] = "TIDAK";
                 }
             }
@@ -208,18 +222,18 @@ namespace PreTubes
             {
                 if (DFS(queryNum[1], queryNum[2]))
                 {
-                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
+                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
                     Console.WriteLine("Urutan Simpul yang Anda lalui:");
-                    urutanSimpulFinal.Reverse();
-                    urutanSimpulFinal.ForEach(Console.WriteLine);
+                    //urutanSimpulFinal.Reverse();
+                    //urutanSimpulFinal.ForEach(Console.WriteLine);
                     urutanSimpulFinal.Clear();
                     answer[0] = "YA";
                 }
                 else
                 {
-                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     answer[0] = "TIDAK";
                 }
             }
@@ -232,8 +246,10 @@ namespace PreTubes
         public void insertQuery()
         {
             //Procedure yang dijalankan apabila query dari file
-            StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
-            StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
+           // StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
+            StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query100k.txt");
+            //StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
+            StreamWriter answerFile = new StreamWriter(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer_100k.txt"); // File Answer
             string temp = queryFile.ReadLine();
             string[] answer; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
             answer = new string[1];
