@@ -14,6 +14,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using tw = System.Windows.Forms;
+using td = System.Drawing;
+
+
 
 
 namespace PreTubes
@@ -29,6 +33,7 @@ namespace PreTubes
         private int num;
         private int level;
         private List<int> ways;
+        private bool visit = false;
 
         public House(int n)
         {
@@ -67,6 +72,14 @@ namespace PreTubes
         {
             ways.Remove(input);
         }
+        public bool getVisit()
+        {
+            return visit;
+        }
+        public void setVisit(bool _visit)
+        {
+            visit = _visit;
+        }
     }
     public class AntahBerantahClass
     {
@@ -101,7 +114,7 @@ namespace PreTubes
                 AntahBerantah[integers[i]].addWays(integers[i + 1]);
                 AntahBerantah[integers[i + 1]].addWays(integers[i]);
             }
-            show();
+            //show();
         }
         public void show() //Fungsi untuk debugging.
         {
@@ -157,7 +170,6 @@ namespace PreTubes
                     if (AntahBerantah[num_to].getLevel() < AntahBerantah[num_from].getLevel())
                     {
                         urutanSimpul.Add(num_to);
-
                         foreach (int i in urutanSimpul)
                         {
                             urutanSimpulFinal.Add(i);
@@ -180,11 +192,8 @@ namespace PreTubes
                         {
                             urutanSimpul.Add(num_from);
                             int idxSearch = AntahBerantah[num_from].listWays()[i];
-                           
                             if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel()) //cek apakah simpul num_to menjauh.
                                found = found || DFS(idxSearch, num_to);
-                               
-
                             urutanSimpul.Remove(num_from);
                         }
                 }
@@ -282,6 +291,19 @@ namespace PreTubes
             AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
             AB.show();
             MessageBox.Show("Map loaded");
+            TesDraw();
+            
+
+            /*
+            RectangleF bounds = new RectangleF(x, y, width, height);
+            using (StringFormat format = new StringFormat())
+            {
+                format.Alignment = StringAlignment.Center;
+                format.LineAlignment = StringAlignment.Center;
+                graphicsObj.DrawText("Number", SystemFonts.Default, Brushes.Black, bounds, format);
+            }
+            */
+
         }
         private void Insert_Query_File_Click(object sender, RoutedEventArgs e)
         {
@@ -332,5 +354,19 @@ namespace PreTubes
                 }
             }
         }
+        //tw.PaintEventArgs e
+        
+        private void TesDraw()
+        {
+            System.Drawing.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
+            for (int i = 1; i < AB.AntahBerantah.Count(); i++)
+            {
+                td.SolidBrush myBrush = new td.SolidBrush(td.Color.Red);
+                graphicsObj.FillEllipse(myBrush, new td.Rectangle(10+i*50, 10+i*50, 20, 20));
+            }
+            //myBrush.Dispose();
+            //graphicsObj.Dispose();
+        }
+        
     }
 }
