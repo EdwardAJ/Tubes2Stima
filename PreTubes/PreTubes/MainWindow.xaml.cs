@@ -178,7 +178,7 @@ namespace PreTubes
             }
             return found;
         }
-        public void eksekusi(string[] queryString, int[] queryNum)
+        public void eksekusi(string[] queryString, int[] queryNum, string[] answer)
         {
             for (int i = 0; i < queryString.Length; i++)
             {
@@ -195,11 +195,13 @@ namespace PreTubes
                     Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     urutanSimpulFinal.ForEach(Console.WriteLine);
                     urutanSimpulFinal.Clear();
+                    answer[0] = "YA";
                 }
                 else
                 {
                     Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    answer[0] = "TIDAK";
                 }
             }
             else if (queryNum[0] == 1)
@@ -212,11 +214,13 @@ namespace PreTubes
                     urutanSimpulFinal.Reverse();
                     urutanSimpulFinal.ForEach(Console.WriteLine);
                     urutanSimpulFinal.Clear();
+                    answer[0] = "YA";
                 }
                 else
                 {
                     Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    answer[0] = "TIDAK";
                 }
             }
             else
@@ -227,17 +231,23 @@ namespace PreTubes
         }
         public void insertQuery()
         {
-            StreamReader sr = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
-            string temp = sr.ReadLine(); 
+            //Procedure yang dijalankan apabila query dari file
+            StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
+            StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
+            string temp = queryFile.ReadLine();
+            string[] answer; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
+            answer = new string[1];
             int n = int.Parse(temp);
             for (int i = 0; i < n; i++)
             {
-                temp = sr.ReadLine();
+                temp = queryFile.ReadLine();
                 string[] queryString = temp.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 int[] queryNum = new int[queryString.Length];
-                eksekusi(queryString, queryNum);
+                eksekusi(queryString, queryNum, answer);
+                answerFile.WriteLine(temp + " : " + answer[0]);
             }
-            sr.Close();
+            queryFile.Close();
+            answerFile.Close();
         }
     }
     public partial class MainWindow : Window
@@ -259,6 +269,7 @@ namespace PreTubes
         }
         private void Insert_Query_File_Click(object sender, RoutedEventArgs e)
         {
+            //Procedure yang dijalankan apabila Button "Insert Query File" diklik
             if (AB != null)
             {
                 AB.insertQuery();
@@ -294,7 +305,9 @@ namespace PreTubes
             {
                 if (AB != null) //KALAU MAPNYA SUDAH DILOAD
                 {
-                    AB.eksekusi(queryString, queryNum);
+                    string[] answer;
+                    answer = new string[1];
+                    AB.eksekusi(queryString, queryNum, answer);
                 }
                 else
                 {
