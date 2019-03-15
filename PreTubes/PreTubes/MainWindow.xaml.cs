@@ -278,6 +278,7 @@ namespace PreTubes
     {
         public AntahBerantahClass AB;
         public float zoom = 1f;
+        public int size = 0;
         public MainWindow()
         {
             Console.WriteLine("Press any key to exit.");
@@ -289,15 +290,16 @@ namespace PreTubes
             AB = new AntahBerantahClass(FilePath);
             AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
             AB.show();
+            size = 400 / AB.AntahBerantah.Count();
             MessageBox.Show("Map loaded");
             
             //this.InvalidateVisual();
-            //TesDraw();
+            TesDraw(size,size);
             
             // Connect the Paint event of the PictureBox to the event handler method.
-            Graf.Paint += new System.Windows.Forms.PaintEventHandler(this.TesDraw);
+            //Graf.Paint += new System.Windows.Forms.PaintEventHandler(this.TesDraw);
             // Add the PictureBox control to the Form.
-            this.Controls.Add(TesDraw);
+            //this.Controls.Add(TesDraw);
 
             /*
             RectangleF bounds = new RectangleF(x, y, width, height);
@@ -361,25 +363,30 @@ namespace PreTubes
         }
         //tw.PaintEventArgs e
         
-        private void TesDraw(object sender, tw.PaintEventArgs e)
+        private void TesDraw(int sizex, int sizey)
         {
-            td.Graphics graphicsObj = e.Graphics;
-            //td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
-            graphicsObj.ScaleTransform(zoom, zoom);
+            //td.Graphics graphicsObj = e.Graphics;
+            td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
+            //graphicsObj.ScaleTransform(zoom, zoom);
+            int jum = AB.AntahBerantah.Count();
             for (int i = 1; i < AB.AntahBerantah.Count(); i++)
             {
                 td.SolidBrush myBrush = new td.SolidBrush(td.Color.Blue);
-                graphicsObj.FillEllipse(myBrush, new td.Rectangle((i-1)*30, (i-1)*30, 30, 30));
+                graphicsObj.FillEllipse(myBrush, new td.Rectangle((i-1)*sizex, (i-1)* sizey, sizex, sizey));
             }
             //myBrush.Dispose();
             //graphicsObj.Dispose();
         }
 
+        
         private void TesScroll(object sender, EventArgs e)
         {
-            zoom = (float)Slider1.Value/100f;
+            //zoom = (float)Slider1.Value/100f;
             Graf.InvalidateVisual();
+            size += (int)Slider1.Value;
+            TesDraw(size, size);
         }
+        
         
     }
 }
