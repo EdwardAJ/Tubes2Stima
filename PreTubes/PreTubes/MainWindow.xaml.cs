@@ -212,17 +212,13 @@ namespace PreTubes
             {
                 if (DFS(queryNum[2], queryNum[1])) //DFS(from,to)
                 {
-                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
                     //Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     //urutanSimpulFinal.ForEach(Console.WriteLine);
                     urutanSimpulFinal.Clear();
                     answer[0] = "YA";
                 }
                 else
-                {
-                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                {                  
                     answer[0] = "TIDAK";
                 }
             }
@@ -230,8 +226,6 @@ namespace PreTubes
             {
                 if (DFS(queryNum[1], queryNum[2]))
                 {
-                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
                     Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     //urutanSimpulFinal.Reverse();
                     //urutanSimpulFinal.ForEach(Console.WriteLine);
@@ -240,8 +234,6 @@ namespace PreTubes
                 }
                 else
                 {
-                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     answer[0] = "TIDAK";
                 }
             }
@@ -249,18 +241,18 @@ namespace PreTubes
             {
                 Console.WriteLine("Query harus sesuai format");
                 MessageBox.Show("Query harus sesuai format");
+                answer[0] = "ERROR";
             }
         }
         public void insertQuery()
         {
             //Procedure yang dijalankan apabila query dari file
-           // StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
+            //StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
             StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query50k.txt");
             //StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
             StreamWriter answerFile = new StreamWriter(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer_100k.txt"); // File Answer
             string temp = queryFile.ReadLine();
-            string[] answer; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
-            answer = new string[1];
+            string[] answer = new string[1]; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
             int n = int.Parse(temp);
             for (int i = 0; i < n; i++)
             {
@@ -353,6 +345,11 @@ namespace PreTubes
                     string[] answer;
                     answer = new string[1];
                     AB.eksekusi(queryString, queryNum, answer);
+                    if (answer[0] != "ERROR")
+                    {
+                        Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
+                        MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
+                    }
                 }
                 else
                 {
