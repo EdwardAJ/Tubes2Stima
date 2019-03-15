@@ -19,7 +19,6 @@ using td = System.Drawing;
 
 
 
-
 namespace PreTubes
 {
     /*
@@ -256,7 +255,7 @@ namespace PreTubes
         {
             //Procedure yang dijalankan apabila query dari file
            // StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
-            StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query100k.txt");
+            StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query50k.txt");
             //StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
             StreamWriter answerFile = new StreamWriter(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer_100k.txt"); // File Answer
             string temp = queryFile.ReadLine();
@@ -278,7 +277,7 @@ namespace PreTubes
     public partial class MainWindow : Window
     {
         public AntahBerantahClass AB;
-
+        public float zoom = 1f;
         public MainWindow()
         {
             Console.WriteLine("Press any key to exit.");
@@ -291,8 +290,14 @@ namespace PreTubes
             AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
             AB.show();
             MessageBox.Show("Map loaded");
-            TesDraw();
             
+            //this.InvalidateVisual();
+            //TesDraw();
+            
+            // Connect the Paint event of the PictureBox to the event handler method.
+            Graf.Paint += new System.Windows.Forms.PaintEventHandler(this.TesDraw);
+            // Add the PictureBox control to the Form.
+            this.Controls.Add(TesDraw);
 
             /*
             RectangleF bounds = new RectangleF(x, y, width, height);
@@ -356,16 +361,24 @@ namespace PreTubes
         }
         //tw.PaintEventArgs e
         
-        private void TesDraw()
+        private void TesDraw(object sender, tw.PaintEventArgs e)
         {
-            System.Drawing.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
+            td.Graphics graphicsObj = e.Graphics;
+            //td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
+            graphicsObj.ScaleTransform(zoom, zoom);
             for (int i = 1; i < AB.AntahBerantah.Count(); i++)
             {
-                td.SolidBrush myBrush = new td.SolidBrush(td.Color.Red);
-                graphicsObj.FillEllipse(myBrush, new td.Rectangle(10+i*50, 10+i*50, 20, 20));
+                td.SolidBrush myBrush = new td.SolidBrush(td.Color.Blue);
+                graphicsObj.FillEllipse(myBrush, new td.Rectangle((i-1)*30, (i-1)*30, 30, 30));
             }
             //myBrush.Dispose();
             //graphicsObj.Dispose();
+        }
+
+        private void TesScroll(object sender, EventArgs e)
+        {
+            zoom = (float)Slider1.Value/100f;
+            Graf.InvalidateVisual();
         }
         
     }
