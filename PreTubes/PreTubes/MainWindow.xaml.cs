@@ -14,8 +14,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using ta = System.Windows.Forms.Integration;
 using tw = System.Windows.Forms;
 using td = System.Drawing;
+
 
 
 
@@ -186,6 +188,7 @@ namespace PreTubes
                 if (AntahBerantah[num_to].getLevel() < AntahBerantah[num_from].getLevel())
                 {
                     urutanSimpul.Add(num_to);
+                    
                     foreach (int i in urutanSimpul)
                     {
                         urutanSimpulFinal.Add(i);
@@ -208,8 +211,12 @@ namespace PreTubes
                 {
                     urutanSimpul.Add(num_from);
                     int idxSearch = AntahBerantah[num_from].listWays()[i];
-                    if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel()) //cek apakah simpul num_to menjauh.
+                    if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel())//cek apakah simpul num_to menjauh.
+                    {
                         found = found || DFS(idxSearch, num_to);
+                        
+                    }
+                        
                     urutanSimpul.Remove(num_from);
                 }
             }
@@ -272,9 +279,9 @@ namespace PreTubes
         {
             //Procedure yang dijalankan apabila query dari file
             //StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
-            StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query50k.txt");
+            StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt");
             //StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
-            StreamWriter answerFile = new StreamWriter(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer_100k.txt"); // File Answer
+            StreamWriter answerFile = new StreamWriter(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer_query.txt"); // File Answer
             string temp = queryFile.ReadLine();
             string[] answer = new string[1]; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
             int n = int.Parse(temp);
@@ -292,16 +299,13 @@ namespace PreTubes
     }
     public partial class MainWindow : Window
     {
+        public VisualCollection _children;
         public AntahBerantahClass AB;
         public float zoom = 1f;
         public float size = 0;
         public double temp = 0;
-        //public int sizex = 0;
-        //public int sizey = 0;
-
         public MainWindow()
         {
-
             Console.WriteLine("Press any key to exit.");
             System.Console.Read();
         }
@@ -313,27 +317,7 @@ namespace PreTubes
             AB.show();
             size = (float)400 / AB.AntahBerantah.Count();
             MessageBox.Show("Map loaded");
-
-            //Invalidate();
-            this.Graf.InvalidateVisual();
-            //TesDraw((int)size,(int)size);
             DFSDraw(1, 1, size, size);
-
-            // Connect the Paint event of the PictureBox to the event handler method.
-            //Graf.Paint += new System.Windows.Forms.PaintEventHandler(this.TesDraw);
-            // Add the PictureBox control to the Form.
-            //this.Controls.Add(TesDraw);
-
-            /*
-            RectangleF bounds = new RectangleF(x, y, width, height);
-            using (StringFormat format = new StringFormat())
-            {
-                format.Alignment = StringAlignment.Center;
-                format.LineAlignment = StringAlignment.Center;
-                graphicsObj.DrawText("Number", SystemFonts.Default, Brushes.Black, bounds, format);
-            }
-            */
-
         }
         private void Insert_Query_File_Click(object sender, RoutedEventArgs e)
         {
@@ -393,8 +377,9 @@ namespace PreTubes
         //Ini adalah method untuk menggambar Grafik secara DFS.
         //Urutan gambar: Garis penghubung antar node -> Simpul (lingkaran) -> Font.
         //Tujuan pengurutan gambar: Agar font terletak di atas simpul dan simpul terletak di atas garis.
-        private void DFSDraw(int num_from, int num_temp, float sizex, float sizey)
+        private void DFSDraw(int num_from, int num_prec, float sizex, float sizey)
         {
+
             //Traversal untuk mencari SEMUA TETANGGA dari node.
             for (int i = 0; i < AB.AntahBerantah[num_from].listWays().Count; i++)
             {
@@ -406,8 +391,9 @@ namespace PreTubes
             }
 
             //Deklarasi variabel graphics
+           
             td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
-
+       
             //Deklarasi brush, untuk membuat lingkaran.
             td.SolidBrush myBrush = new td.SolidBrush(td.ColorTranslator.FromHtml("#002638"));
 
@@ -434,9 +420,9 @@ namespace PreTubes
             {
                 //Deklarasi untuk menentukan posisi drawLine
                 int posx_from = (int)(AB.AntahBerantah[num_from].getLevel_ID()); //posisi x asal
-                int posx_to = (int)(AB.AntahBerantah[num_temp].getLevel_ID()); //posisi x menuju
+                int posx_to = (int)(AB.AntahBerantah[num_prec].getLevel_ID()); //posisi x menuju
                 int posy_from = (int)(AB.AntahBerantah[num_from].getLevel()) - 1; //posisi y asal
-                int posy_to = (int)(AB.AntahBerantah[num_temp].getLevel()) - 1; // posisi y menuju
+                int posy_to = (int)(AB.AntahBerantah[num_prec].getLevel()) - 1; // posisi y menuju
                 // (Urutan gambar #1) Ggambar Line dari posisi from ke posisi posisi to
                 graphicsObj.DrawLine(myPen, (int)(posx_from * 400 / (AB.arrID[posy_from + 1] + 1) + 0.5 * size), (int)(posy_from * 2 * sizey + 0.5 * size), (int)(posx_to * 400 / (AB.arrID[posy_to + 1] + 1) + 0.5 * size), (int)(posy_to * 2 * sizey + 0.5 * size));
             }
@@ -449,31 +435,38 @@ namespace PreTubes
             graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * sizey), (int)sizex, (int)sizey));
 
             //Inisialisasi font yang digunakan
-            td.Font drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
+            td.Font drawFont;
+            if (size > 0)
+            {
+                 drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
+            } else
+            {
+                drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
+            }
+                
 
             // (Urutan gambar #4)
             //Font diset pada posisi node.
-            graphicsObj.DrawString(num_from.ToString(), drawFont, myFontBrush, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (int)(size / 4)), (ABlevel - 1) * 2 * sizey + (int)(size / 6));
+            if (size > 1)
+                graphicsObj.DrawString(num_from.ToString(), drawFont, myFontBrush, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * sizey + (float)(size / 6));
+           
         }
-
+      
         //Method untuk mem"binding" nilai dari scroll UNTUK ZOOM.
         private void TesScroll(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //Digunakan untuk merefresh UI, namun masih belum berhasil refresh.
-            this.Graf.InvalidateVisual();
-
+            //Digunakan untuk merefresh UI
+            this.Graf.Child.Refresh();
+           
             if (Slider1.Value > temp)
                 //Zoom in
                 size += (float)Slider1.Value;
             else
-                size -= (float)(temp - Slider1.Value); //Zoom out
-
-            //size = (int)Slider1.Value;
-            //TesDraw((int)size, (int)size);
-
+                size -= 2*(float)Slider1.Value ; //Zoom out
             // Gambar lagi!
             DFSDraw(1, 1, size, size);
             temp = (float)Slider1.Value; //Simpan temp = value slider, nantinya akan dibandingkan lagi.
+            
         }
     }
 }

@@ -9,7 +9,7 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Grid Background="#FF002638" Margin="0,0,2,0">
-        <WindowsFormsHost x:Name="Graf" Grid.ColumnSpan="3" Margin="0,50,391,26" Grid.RowSpan="2">
+        <WindowsFormsHost x:Name="Graf" Grid.ColumnSpan="3" Margin="0,50,391,26" Grid.RowSpan="2" >
             <wf:Panel></wf:Panel>
         </WindowsFormsHost>
         <Button Content="LOAD MAP" HorizontalAlignment="Left" Margin="539,132.412,0,0" VerticalAlignment="Top" Width="96" Click="Load_Click" Grid.Column="2" Height="22" Background="#FF002638" Foreground="#FF00DEFF" BorderBrush="#FF00DEFF" FontFamily="Avenir Next LT Pro" FontWeight="Bold" FontSize="10" Grid.Row="1"/>
