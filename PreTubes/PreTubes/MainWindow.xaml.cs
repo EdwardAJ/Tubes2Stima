@@ -96,8 +96,7 @@ namespace PreTubes
     }
     public class AntahBerantahClass
     {
-        public List<int> urutanSimpul = new List<int>();
-        public List<int> urutanSimpulFinal = new List<int>();
+        
         public int[] arrID = new int[100001];
         public int[] integers;
         public List<House> AntahBerantah;
@@ -175,54 +174,123 @@ namespace PreTubes
             }
             leveliterator--;
         }
+    }
+    public partial class MainWindow : Window
+    {
+        public AntahBerantahClass AB;
+        public List<int> urutanSimpul = new List<int>();
+        public List<int> urutanSimpulFinal = new List<int>();
+        public float zoom = 1f;
+        public float size = 0;
+        public double temp = 0;
+
+        //Deklarasi brush, untuk membuat lingkaran.
+        public td.SolidBrush myBrush = new td.SolidBrush(td.ColorTranslator.FromHtml("#002638"));
+
+        //Deklarasi brush, untuk membuat font.
+        public td.SolidBrush myFontBrush = new td.SolidBrush(td.ColorTranslator.FromHtml("#00deff"));
+
+        //Deklarasi brush, untuk mengganti warna font.
+        public td.SolidBrush myFontBrushNew = new td.SolidBrush(td.ColorTranslator.FromHtml("#00ff66"));
+
+        //Deklarasi Pen, untuk membuat garis yang menghubungkan dari node ke node.
+        public td.Pen myPen = new td.Pen(td.ColorTranslator.FromHtml("#00deff"), 2);
+
+        //Deklarasi Pen, untuk membuat stroke pada setiap lingkaran.
+        public td.Pen PenStroke = new td.Pen(td.ColorTranslator.FromHtml("#00deff"), 3);
+
+        //Deklarasi Pen, untuk mengganti warna garis yang menghubungkan dari node ke node.
+        public td.Pen myPenNew = new td.Pen(td.ColorTranslator.FromHtml("#00ff66"), 2);
+
+        //Deklarasi Pen, untuk mengganti warna stroke.
+        public td.Pen PenStrokeNew  = new td.Pen(td.ColorTranslator.FromHtml("#00ff66"), 3);
+
+        //Inisialisasi font yang digunakan
+        public td.Font drawFont;
 
 
-        public bool DFS(int num_from, int num_to)
+        public MainWindow()
         {
-            bool found = false;
-
-            if (AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau suatu simpul terhubung LANGSUNG dengan num_to
-            {
-                urutanSimpul.Add(num_from);
-                //cek apakah simpul num_to menjauh.
-                if (AntahBerantah[num_to].getLevel() < AntahBerantah[num_from].getLevel())
-                {
-                    urutanSimpul.Add(num_to);
-                    
-                    foreach (int i in urutanSimpul)
-                    {
-                        urutanSimpulFinal.Add(i);
-                    }
-
-                    //urutanSimpul.ForEach(Console.Write) ;
-                    found = true;
-                    urutanSimpul.Remove(num_to);
-                    /*
-                    Console.Write("TesLAGI: ");
-                    urutanSimpulFinal.ForEach(Console.Write);
-                    */
-                }
-                urutanSimpul.Remove(num_from);
-            }
-            else
-
-            {   //rekurens
-                for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
-                {
-                    urutanSimpul.Add(num_from);
-                    int idxSearch = AntahBerantah[num_from].listWays()[i];
-                    if (AntahBerantah[idxSearch].getLevel() < AntahBerantah[num_from].getLevel())//cek apakah simpul num_to menjauh.
-                    {
-                        found = found || DFS(idxSearch, num_to);
-                        
-                    }
-                        
-                    urutanSimpul.Remove(num_from);
-                }
-            }
-            return found;
+            Console.WriteLine("Press any key to exit.");
+            System.Console.Read();
+        }
+        private void Load_Click(object sender, RoutedEventArgs e)
+        {
+            string FilePath = PathFile.Text;
+            AB = new AntahBerantahClass(FilePath);
+            AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
+            AB.show();
+            size = (float)400 / AB.AntahBerantah.Count();
+            MessageBox.Show("Map loaded");
+            DFSDraw(1, 1);
+            //DFS(8, 2);
         }
 
+        public void DrawPath ()
+        {
+            td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
+
+            for (int i = 0; i < urutanSimpulFinal.Count(); i++)
+            {
+                //ABlevel untuk menentukan posisi y nantinya, menggunakan atribut level pada House
+                int ABlevel = AB.AntahBerantah[urutanSimpulFinal[i]].getLevel();
+                //ABlevelx untuk menentukan posisi x nantinya, menggunakan atribut level_ID pada House.
+                int ABlevelx = AB.AntahBerantah[urutanSimpulFinal[i]].getLevel_ID();
+                int posx_from = (int)(AB.AntahBerantah[urutanSimpulFinal[i]].getLevel_ID()); //posisi x asal
+                int posy_from = (int)(AB.AntahBerantah[urutanSimpulFinal[i]].getLevel()) - 1; //posisi y asal
+
+                td.Rectangle rect1 = new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size);
+
+                if (i != urutanSimpulFinal.Count() - 1)
+                {
+                    int ABlevelto = AB.AntahBerantah[urutanSimpulFinal[i + 1]].getLevel();
+                    int ABlevelxto = AB.AntahBerantah[urutanSimpulFinal[i + 1]].getLevel_ID();
+                    int posx_to = (int)(AB.AntahBerantah[urutanSimpulFinal[i + 1]].getLevel_ID()); //posisi x menuju
+                    int posy_to = (int)(AB.AntahBerantah[urutanSimpulFinal[i + 1]].getLevel()) - 1; // posisi y menuju
+
+                    // (Urutan gambar #1)
+                    //Gambar Line dari posisi from ke posisi posisi to
+                    graphicsObj.DrawLine(myPenNew, (int)(posx_from * 400 / (AB.arrID[posy_from + 1] + 1) + 0.5 * size), (int)(posy_from * 2 * size + 0.5 * size), (int)(posx_to * 400 / (AB.arrID[posy_to + 1] + 1) + 0.5 * size), (int)(posy_to * 2 * size + 0.5 * size));
+
+                    // (Urutan gambar #2 )
+                    //Membuat outline dari lingkaran
+                    graphicsObj.DrawEllipse(PenStrokeNew, rect1);
+
+                    // (Urutan gambar #3)
+                    //Menggambar lingkaran dengan radius size (sizex) dan (sizey)
+                    graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size));
+
+                    if (size > 0)
+                        drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
+                    else
+                        drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
+
+                    // (Urutan gambar #4)
+                    //Font diset pada posisi node.
+                    if (size > 1)
+                        graphicsObj.DrawString(urutanSimpulFinal[i].ToString(), drawFont, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
+                } else
+                {
+                    // (Urutan gambar #2 )
+                    //Membuat outline dari lingkaran
+                    graphicsObj.DrawEllipse(PenStrokeNew, rect1);
+
+                    // (Urutan gambar #3)
+                    //Menggambar lingkaran dengan radius size (sizex) dan (sizey)
+                    graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size));
+
+                    if (size > 0)
+                        drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
+                    else
+                        drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
+
+                    // (Urutan gambar #4)
+                    //Font diset pada posisi node.
+                    if (size > 1)
+                        graphicsObj.DrawString(urutanSimpulFinal[i].ToString(), drawFont, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
+                }
+            }
+        }
 
         public void eksekusi(string[] queryString, int[] queryNum, string[] answer)
         {
@@ -231,7 +299,7 @@ namespace PreTubes
                 queryNum[i] = int.Parse(queryString[i]);
             }
 
-            //Conditinal untuk angka pertama pada query : '0' atau '1':
+            //Conditional untuk angka pertama pada query : '0' atau '1':
             if (queryNum[0] == 0)
             {
                 if (DFS(queryNum[2], queryNum[1])) //DFS(from,to)
@@ -240,11 +308,14 @@ namespace PreTubes
                     //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
                     //Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     //urutanSimpulFinal.ForEach(Console.WriteLine);
+                    DFSDraw(1, 1);
+                    DrawPath();
                     urutanSimpulFinal.Clear();
                     answer[0] = "YA";
                 }
                 else
                 {
+                    DFSDraw(1, 1);
                     //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     answer[0] = "TIDAK";
@@ -259,6 +330,8 @@ namespace PreTubes
                     Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     //urutanSimpulFinal.Reverse();
                     //urutanSimpulFinal.ForEach(Console.WriteLine);
+                    DFSDraw(1, 1);
+                    DrawPath();
                     urutanSimpulFinal.Clear();
                     answer[0] = "YA";
                 }
@@ -266,6 +339,7 @@ namespace PreTubes
                 {
                     //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
+                    DFSDraw(1, 1);
                     answer[0] = "TIDAK";
                 }
             }
@@ -296,35 +370,12 @@ namespace PreTubes
             queryFile.Close();
             answerFile.Close();
         }
-    }
-    public partial class MainWindow : Window
-    {
-        public VisualCollection _children;
-        public AntahBerantahClass AB;
-        public float zoom = 1f;
-        public float size = 0;
-        public double temp = 0;
-        public MainWindow()
-        {
-            Console.WriteLine("Press any key to exit.");
-            System.Console.Read();
-        }
-        private void Load_Click(object sender, RoutedEventArgs e)
-        {
-            string FilePath = PathFile.Text;
-            AB = new AntahBerantahClass(FilePath);
-            AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
-            AB.show();
-            size = (float)400 / AB.AntahBerantah.Count();
-            MessageBox.Show("Map loaded");
-            DFSDraw(1, 1, size, size);
-        }
         private void Insert_Query_File_Click(object sender, RoutedEventArgs e)
         {
             //Procedure yang dijalankan apabila Button "Insert Query File" diklik
             if (AB != null)
             {
-                AB.insertQuery();
+                insertQuery();
                 Console.WriteLine("Insert Query selesai dieksekusi");
                 MessageBox.Show("Insert Query selesai dieksekusi");
             }
@@ -359,7 +410,7 @@ namespace PreTubes
                 {
                     string[] answer;
                     answer = new string[1];
-                    AB.eksekusi(queryString, queryNum, answer);
+                    eksekusi(queryString, queryNum, answer);
                     if (answer[0] != "ERROR")
                     {
                         Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
@@ -377,9 +428,8 @@ namespace PreTubes
         //Ini adalah method untuk menggambar Grafik secara DFS.
         //Urutan gambar: Garis penghubung antar node -> Simpul (lingkaran) -> Font.
         //Tujuan pengurutan gambar: Agar font terletak di atas simpul dan simpul terletak di atas garis.
-        private void DFSDraw(int num_from, int num_prec, float sizex, float sizey)
+        public void DFSDraw(int num_from, int num_prec)
         {
-
             //Traversal untuk mencari SEMUA TETANGGA dari node.
             for (int i = 0; i < AB.AntahBerantah[num_from].listWays().Count; i++)
             {
@@ -387,25 +437,12 @@ namespace PreTubes
                 //Cari dari "atas" ke "bawah", maksudnya, cari tetangga yang memiliki level lebih dalam dari node asal.
                 if (AB.AntahBerantah[idxSearch].getLevel() > AB.AntahBerantah[num_from].getLevel())
                     //Lakukan DFS lagi pada tetangga.
-                    DFSDraw(AB.AntahBerantah[idxSearch].getNum(), num_from, sizex, sizey);
+                    DFSDraw(AB.AntahBerantah[idxSearch].getNum(), num_from);
             }
 
             //Deklarasi variabel graphics
-           
             td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
-       
-            //Deklarasi brush, untuk membuat lingkaran.
-            td.SolidBrush myBrush = new td.SolidBrush(td.ColorTranslator.FromHtml("#002638"));
-
-            //Deklarasi brush, untuk membuat font.
-            td.SolidBrush myFontBrush = new td.SolidBrush(td.ColorTranslator.FromHtml("#00deff"));
-
-            //Deklarasi Pen, untuk membuat garis yang menghubungkan dari node ke node.
-            td.Pen myPen = new td.Pen(td.ColorTranslator.FromHtml("#00deff"), 2);
-
-            //Deklarasi Pen, untuk membuat stroke pada setiap lingkaran.
-            td.Pen PenStroke = new td.Pen(td.ColorTranslator.FromHtml("#00deff"), 3);
-
+            
             //ABlevel untuk menentukan posisi y nantinya, menggunakan atribut level pada House
             int ABlevel = AB.AntahBerantah[num_from].getLevel();
 
@@ -413,7 +450,7 @@ namespace PreTubes
             int ABlevelx = (AB.AntahBerantah[num_from].getLevel_ID());
 
             //Buat rectangle yang akan dipakai untuk method draw dan fill.
-            td.Rectangle rect = new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * sizey), (int)sizex, (int)sizey);
+            td.Rectangle rect = new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size);
 
             //Cek apakah simpul asal bukan 1
             if (num_from != 1)
@@ -423,8 +460,9 @@ namespace PreTubes
                 int posx_to = (int)(AB.AntahBerantah[num_prec].getLevel_ID()); //posisi x menuju
                 int posy_from = (int)(AB.AntahBerantah[num_from].getLevel()) - 1; //posisi y asal
                 int posy_to = (int)(AB.AntahBerantah[num_prec].getLevel()) - 1; // posisi y menuju
-                // (Urutan gambar #1) Ggambar Line dari posisi from ke posisi posisi to
-                graphicsObj.DrawLine(myPen, (int)(posx_from * 400 / (AB.arrID[posy_from + 1] + 1) + 0.5 * size), (int)(posy_from * 2 * sizey + 0.5 * size), (int)(posx_to * 400 / (AB.arrID[posy_to + 1] + 1) + 0.5 * size), (int)(posy_to * 2 * sizey + 0.5 * size));
+                // (Urutan gambar #1)
+                //Gambar Line dari posisi from ke posisi posisi to
+                graphicsObj.DrawLine(myPen, (int)(posx_from * 400 / (AB.arrID[posy_from + 1] + 1) + 0.5 * size), (int)(posy_from * 2 * size + 0.5 * size), (int)(posx_to * 400 / (AB.arrID[posy_to + 1] + 1) + 0.5 * size), (int)(posy_to * 2 * size + 0.5 * size));
             }
             // (Urutan gambar #2 )
             //Membuat outline dari lingkaran
@@ -432,28 +470,25 @@ namespace PreTubes
 
             // (Urutan gambar #3)
             //Menggambar lingkaran dengan radius size (sizex) dan (sizey)
-            graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * sizey), (int)sizex, (int)sizey));
+            graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size));
 
-            //Inisialisasi font yang digunakan
-            td.Font drawFont;
+           
             if (size > 0)
             {
-                 drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
+                drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
             } else
             {
                 drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
             }
-                
 
             // (Urutan gambar #4)
             //Font diset pada posisi node.
             if (size > 1)
-                graphicsObj.DrawString(num_from.ToString(), drawFont, myFontBrush, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * sizey + (float)(size / 6));
-           
+                graphicsObj.DrawString(num_from.ToString(), drawFont, myFontBrush, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
         }
       
         //Method untuk mem"binding" nilai dari scroll UNTUK ZOOM.
-        private void TesScroll(object sender, RoutedPropertyChangedEventArgs<double> e)
+        public void TesScroll(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             //Digunakan untuk merefresh UI
             this.Graf.Child.Refresh();
@@ -464,9 +499,51 @@ namespace PreTubes
             else
                 size -= 2*(float)Slider1.Value ; //Zoom out
             // Gambar lagi!
-            DFSDraw(1, 1, size, size);
+            DFSDraw(1, 1);
+            DrawPath();
             temp = (float)Slider1.Value; //Simpan temp = value slider, nantinya akan dibandingkan lagi.
             
+        }
+
+        public bool DFS(int num_from, int num_to)
+        {
+            bool found = false;
+            //Deklarasi variabel graphics
+            if (AB.AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau suatu simpul terhubung LANGSUNG dengan num_to
+            {
+                urutanSimpul.Add(num_from);
+                //cek apakah simpul num_to menjauh.
+                if (AB.AntahBerantah[num_to].getLevel() < AB.AntahBerantah[num_from].getLevel())
+                {
+                    urutanSimpul.Add(num_to);
+                    foreach (int i in urutanSimpul)
+                    {
+                        urutanSimpulFinal.Add(i);
+                    }
+                    //urutanSimpul.ForEach(Console.Write) ;
+                    found = true;
+                    urutanSimpul.Remove(num_to);
+                    /*
+                    Console.Write("TesLAGI: ");
+                    urutanSimpulFinal.ForEach(Console.Write);
+                    */
+                }
+                urutanSimpul.Remove(num_from);
+            }
+            else
+            {   //rekurens
+                for (int i = 0; i < AB.AntahBerantah[num_from].listWays().Count; i++)
+                {
+                    urutanSimpul.Add(num_from);
+                    int idxSearch = AB.AntahBerantah[num_from].listWays()[i];
+                    if (AB.AntahBerantah[idxSearch].getLevel() < AB.AntahBerantah[num_from].getLevel())//cek apakah simpul num_to menjauh.
+                    {
+                        found = found || DFS(idxSearch, num_to);
+                    }
+                    urutanSimpul.Remove(num_from);
+                }
+            }
+            return found;
         }
     }
 }
