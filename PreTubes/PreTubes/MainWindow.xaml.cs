@@ -180,9 +180,9 @@ namespace PreTubes
         public AntahBerantahClass AB;
         public List<int> urutanSimpul = new List<int>();
         public List<int> urutanSimpulFinal = new List<int>();
-        public float zoom = 1f;
+        //public float zoom = 1f;
         public float size = 0;
-        public double temp = 0;
+        public float ratio = 5;
 
         //Deklarasi brush, untuk membuat lingkaran.
         public td.SolidBrush myBrush = new td.SolidBrush(td.ColorTranslator.FromHtml("#002638"));
@@ -220,9 +220,11 @@ namespace PreTubes
             AB = new AntahBerantahClass(FilePath);
             AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
             AB.show();
-            size = (float)400 / AB.AntahBerantah.Count();
+            size = (float)400 / AB.AntahBerantah.Count() + ratio * (float)Slider1.Value;
             MessageBox.Show("Map loaded");
+            this.Graf.Child.Refresh();
             DFSDraw(1, 1);
+            
             //DFS(8, 2);
         }
 
@@ -352,10 +354,10 @@ namespace PreTubes
         public void insertQuery()
         {
             //Procedure yang dijalankan apabila query dari file
-            //StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
-            StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt");
-            //StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
-            StreamWriter answerFile = new StreamWriter(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer_query.txt"); // File Answer
+            StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
+            //StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt");
+            StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
+            //StreamWriter answerFile = new StreamWriter(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer_query.txt"); // File Answer
             string temp = queryFile.ReadLine();
             string[] answer = new string[1]; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
             int n = int.Parse(temp);
@@ -490,19 +492,18 @@ namespace PreTubes
         //Method untuk mem"binding" nilai dari scroll UNTUK ZOOM.
         public void TesScroll(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //Digunakan untuk merefresh UI
-            this.Graf.Child.Refresh();
-           
-            if (Slider1.Value > temp)
-                //Zoom in
-                size += (float)Slider1.Value;
-            else
-                size -= 2*(float)Slider1.Value ; //Zoom out
-            // Gambar lagi!
-            DFSDraw(1, 1);
-            DrawPath();
-            temp = (float)Slider1.Value; //Simpan temp = value slider, nantinya akan dibandingkan lagi.
-            
+            if (AB != null)
+            {
+                float initial_size = 400 / AB.AntahBerantah.Count();
+                //Digunakan untuk merefresh UI
+                this.Graf.Child.Refresh();
+
+                // Zoom sesuai skala slider
+                size = initial_size + ratio * (float)Slider1.Value;
+                // Gambar lagi!
+                DFSDraw(1, 1);
+                DrawPath();
+            }
         }
 
         public bool DFS(int num_from, int num_to)
