@@ -182,7 +182,9 @@ namespace PreTubes
         public List<int> urutanSimpulFinal = new List<int>();
         //public float zoom = 1f;
         public float size = 0;
-        public float ratio = 5;
+        public float ratio = 5; //Rasio adalah skala perbesaran saat slider digeser
+        public string queueQuery; //Query File yang ngantri untuk diklik next
+        public string pathQueryFile;
 
         //Deklarasi brush, untuk membuat lingkaran.
         public td.SolidBrush myBrush = new td.SolidBrush(td.ColorTranslator.FromHtml("#002638"));
@@ -217,14 +219,20 @@ namespace PreTubes
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             string FilePath = PathFile.Text;
-            AB = new AntahBerantahClass(FilePath);
-            AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
-            AB.show();
-            size = (float)400 / AB.AntahBerantah.Count() + ratio * (float)Slider1.Value;
-            MessageBox.Show("Map loaded");
-            this.Graf.Child.Refresh();
-            DFSDraw(1, 1);
-            
+            if (FilePath != "")
+            {
+                AB = new AntahBerantahClass(FilePath);
+                AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
+                AB.show();
+                size = (float)400 / AB.AntahBerantah.Count() + ratio * (float)Slider1.Value;
+                MessageBox.Show("Map loaded");
+                this.Graf.Child.Refresh();
+                DFSDraw(1, 1);
+            }
+            else
+            {
+                MessageBox.Show("Isi dulu path map nya!");
+            }
             //DFS(8, 2);
         }
 
@@ -294,7 +302,7 @@ namespace PreTubes
             }
         }
 
-        public void eksekusi(string[] queryString, int[] queryNum, string[] answer)
+        public void EksekusiQuery(string[] queryString, int[] queryNum, string[] answer, bool isDraw)
         {
             for (int i = 0; i < queryString.Length; i++)
             {
@@ -310,9 +318,12 @@ namespace PreTubes
                     //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
                     //Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     //urutanSimpulFinal.ForEach(Console.WriteLine);
-                    DFSDraw(1, 1);
-                    DrawPath();
-                    urutanSimpulFinal.Clear();
+                    if (isDraw)
+                    {
+                        DFSDraw(1, 1);
+                        DrawPath();
+                        urutanSimpulFinal.Clear();
+                    }
                     answer[0] = "YA";
                 }
                 else
@@ -332,9 +343,12 @@ namespace PreTubes
                     Console.WriteLine("Urutan Simpul yang Anda lalui:");
                     //urutanSimpulFinal.Reverse();
                     //urutanSimpulFinal.ForEach(Console.WriteLine);
-                    DFSDraw(1, 1);
-                    DrawPath();
-                    urutanSimpulFinal.Clear();
+                    if (isDraw)
+                    {
+                        DFSDraw(1, 1);
+                        DrawPath();
+                        urutanSimpulFinal.Clear();
+                    }
                     answer[0] = "YA";
                 }
                 else
@@ -349,28 +363,47 @@ namespace PreTubes
             {
                 Console.WriteLine("Query harus sesuai format");
                 MessageBox.Show("Query harus sesuai format");
+                answer[0] = "ERROR";
             }
         }
         public void insertQuery()
         {
+            pathQueryFile = FileQuery.Text;
             //Procedure yang dijalankan apabila query dari file
-            StreamReader queryFile = new StreamReader(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt"); // File Query
-            //StreamReader queryFile = new StreamReader(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\query.txt");
-            StreamWriter answerFile = new StreamWriter(@"D:\Kuliah Semester 4\Strategi Algoritma\Tubes 2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer.txt"); // File Answer
-            //StreamWriter answerFile = new StreamWriter(@"D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\bin\Debug\answer_query.txt"); // File Answer
-            string temp = queryFile.ReadLine();
-            string[] answer = new string[1]; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
-            int n = int.Parse(temp);
-            for (int i = 0; i < n; i++)
+            if (pathQueryFile != "")
             {
-                temp = queryFile.ReadLine();
-                string[] queryString = temp.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                int[] queryNum = new int[queryString.Length];
-                eksekusi(queryString, queryNum, answer);
-                answerFile.WriteLine(temp + " : " + answer[0]);
+                string[] answer = new string[1]; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
+                StreamReader queryFile = new StreamReader(pathQueryFile); // File Query
+                //Generate path file answer
+                string pathAnswerFile = pathQueryFile;
+                while (pathAnswerFile[pathAnswerFile.Length - 1] != '\\')
+                {
+                    pathAnswerFile = pathAnswerFile.Remove(pathAnswerFile.Length - 1);
+                    Console.WriteLine(pathAnswerFile);
+                }
+                pathAnswerFile = pathAnswerFile + "answer.txt";
+                StreamWriter answerFile = new StreamWriter(pathAnswerFile); // File Answer
+                string temp = queryFile.ReadLine();
+                int n = int.Parse(temp);
+                for (int i = 0; i < n; i++)
+                {
+                    temp = queryFile.ReadLine();
+                    queueQuery = temp;
+                    string[] queryString = temp.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    int[] queryNum = new int[queryString.Length];
+                    EksekusiQuery(queryString, queryNum, answer, false);
+                    answerFile.WriteLine(temp + " : " + answer[0]);
+                }
+                queryFile.Close();
+                answerFile.Close();
+                queueQuery = "Ready"; // Dengan ini, button "Next" bisa dieksekusi
+                DFSDraw(1, 1); // Reload tanpa draw path
             }
-            queryFile.Close();
-            answerFile.Close();
+            else
+            {
+                Console.WriteLine("Isi dulu path query nya ya!");
+                MessageBox.Show("Isi dulu path query nya ya!");
+            }
         }
         private void Insert_Query_File_Click(object sender, RoutedEventArgs e)
         {
@@ -378,13 +411,63 @@ namespace PreTubes
             if (AB != null)
             {
                 insertQuery();
-                Console.WriteLine("Insert Query selesai dieksekusi");
-                MessageBox.Show("Insert Query selesai dieksekusi");
+                if (pathQueryFile != "")
+                {
+                    Console.WriteLine("Jawaban query selesai ditulis di file");
+                    MessageBox.Show("Jawaban query selesai ditulis di file");
+                }
             }
             else
             {
                 Console.WriteLine("Jangan lupa untuk Load Map!");
                 MessageBox.Show("Jangan lupa untuk Load Map!");
+            }
+        }
+        private void Next_Click(object sender, RoutedEventArgs e)
+        {
+            string temp;
+            if (pathQueryFile == null)
+            {
+                Console.WriteLine("Jangan lupa untuk Insert Query!");
+                MessageBox.Show("Jangan lupa untuk Insert Query!");
+            }
+            else
+            {
+                StreamReader queryFile = new StreamReader(pathQueryFile);
+                temp = queryFile.ReadLine();
+                temp = queryFile.ReadLine();
+                if (queueQuery == "Ready")
+                {
+                    queueQuery = temp;
+                }
+                else
+                {
+                    while (temp != null && temp != queueQuery)
+                    {
+                        temp = queryFile.ReadLine();
+                    }
+                    temp = queryFile.ReadLine();
+                    if (temp == null)
+                    {
+                        Console.WriteLine("Semua query dalam file sudah diproses");
+                        MessageBox.Show("Semua query dalam file sudah diproses");
+                        DFSDraw(1, 1);
+                    }
+                    else
+                    {
+                        queueQuery = temp;
+                    }
+                }
+                queryFile.Close();
+                if (temp != null)
+                {
+                    string[] queryString = queueQuery.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    int[] queryNum = new int[queryString.Length];
+                    string[] answer = new string[1];
+                    EksekusiQuery(queryString, queryNum, answer, true);
+                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
+                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
+                }
             }
         }
         private void Check_Click(object sender, RoutedEventArgs e)
@@ -412,7 +495,7 @@ namespace PreTubes
                 {
                     string[] answer;
                     answer = new string[1];
-                    eksekusi(queryString, queryNum, answer);
+                    EksekusiQuery(queryString, queryNum, answer, true);
                     if (answer[0] != "ERROR")
                     {
                         Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
