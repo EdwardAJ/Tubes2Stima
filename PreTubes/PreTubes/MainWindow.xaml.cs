@@ -149,6 +149,7 @@ namespace PreTubes
         public List<int> urutanSimpul = new List<int>();
         public List<int> urutanSimpulFinal = new List<int>();
         public float size = 0;
+        public float updown_pan = 0; //Translasi graf terhadap sumbu y
         public float ratio = 5; //Rasio adalah skala perbesaran saat slider digeser
         public string queueQuery; //Query File yang ngantri untuk diklik next
         public string pathQueryFile;
@@ -230,7 +231,7 @@ namespace PreTubes
                 int posx_from = (int)(AB.AntahBerantah[urutanSimpulFinal[i]].getLevel_ID()); //posisi x asal
                 int posy_from = (int)(AB.AntahBerantah[urutanSimpulFinal[i]].getLevel()) - 1; //posisi y asal
 
-                td.Rectangle rect1 = new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size);
+                td.Rectangle rect1 = new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)(((ABlevel - 1) * 2 * size) - updown_pan), (int)size, (int)size);
 
                 if (i != urutanSimpulFinal.Count() - 1)
                 {
@@ -270,12 +271,12 @@ namespace PreTubes
                 //Font diset pada posisi node.
                 if (size > 1)
                 {
-                    graphicsObj.DrawString(urutanSimpulFinal[i].ToString(), drawFont, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
-                    graphicsObj.DrawString((i+1).ToString(), drawFontStep, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) - (float)(size/2)), (ABlevel - 1) * 2 * size + (float)(size / 6));
+                    graphicsObj.DrawString(urutanSimpulFinal[i].ToString(), drawFont, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6) - updown_pan);
+                    graphicsObj.DrawString((i + 1).ToString(), drawFontStep, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) - (float)(size / 2)), (ABlevel - 1) * 2 * size + (float)(size / 6) - updown_pan);
                 }
-                
+
             }
-    }
+        }
 
         public string EksekusiQuery(string[] queryString, int[] queryNum, bool isDraw)
         {
@@ -481,7 +482,7 @@ namespace PreTubes
 
             //Deklarasi variabel graphics
             td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
-            
+
             //ABlevel untuk menentukan posisi y nantinya, menggunakan atribut level pada House
             int ABlevel = AB.AntahBerantah[num_from].getLevel();
 
@@ -489,7 +490,7 @@ namespace PreTubes
             int ABlevelx = AB.AntahBerantah[num_from].getLevel_ID();
 
             //Buat rectangle yang akan dipakai untuk method draw dan fill.
-            td.Rectangle rect = new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size);
+            td.Rectangle rect = new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)(((ABlevel - 1) * 2 * size) - updown_pan), (int)size, (int)size);
 
             //Cek apakah simpul asal bukan 1
             if (num_from != 1)
@@ -501,7 +502,7 @@ namespace PreTubes
                 int posy_to = (int)(AB.AntahBerantah[num_prec].getLevel()) - 1; // posisi y menuju
                 // (Urutan gambar #1)
                 //Gambar Line dari posisi from ke posisi posisi to
-                graphicsObj.DrawLine(myPen, (int)(posx_from * 400 / (AB.arrID[posy_from + 1] + 1) + 0.5 * size), (int)(posy_from * 2 * size + 0.5 * size), (int)(posx_to * 400 / (AB.arrID[posy_to + 1] + 1) + 0.5 * size), (int)(posy_to * 2 * size + 0.5 * size));
+                graphicsObj.DrawLine(myPen, (int)(posx_from * 400 / (AB.arrID[posy_from + 1] + 1) + 0.5 * size), (int)(posy_from * 2 * size + 0.5 * size) - updown_pan, (int)(posx_to * 400 / (AB.arrID[posy_to + 1] + 1) + 0.5 * size), (int)(posy_to * 2 * size + 0.5 * size) - updown_pan);
             }
             // (Urutan gambar #2 )
             //Membuat outline dari lingkaran
@@ -509,7 +510,7 @@ namespace PreTubes
 
             // (Urutan gambar #3)
             //Menggambar lingkaran dengan radius size (sizex) dan (sizey)
-            graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size));
+            graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)(((ABlevel - 1) * 2 * size) - updown_pan), (int)size, (int)size));
 
             if (size > 0)
                 drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
@@ -519,9 +520,9 @@ namespace PreTubes
             // (Urutan gambar #4)
             //Font diset pada posisi node.
             if (size > 1)
-                graphicsObj.DrawString(num_from.ToString(), drawFont, myFontBrush, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
+                graphicsObj.DrawString(num_from.ToString(), drawFont, myFontBrush, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size - updown_pan + (float)(size / 6));
         }
-      
+
         //Method untuk mem"binding" nilai dari scroll untuk zoom.
         public void TesScroll(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -536,6 +537,18 @@ namespace PreTubes
                 // Gambar lagi!
                 DFSDraw(1, 1);
                 //DrawPath(true);
+            }
+        }
+
+        //Method untuk mengatur panning atas-bawah
+        public void UpDown_Slider(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (AB != null)
+            {
+                this.Graf.Child.Refresh();
+                updown_pan = (float)(1) * (AB.AntahBerantah.Count) * (float)UpDownSlider.Value * (float)Slider1.Value;
+                DFSDraw(1, 1);
+                DrawPath(true);
             }
         }
 

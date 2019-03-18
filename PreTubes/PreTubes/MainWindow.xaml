@@ -26,6 +26,17 @@
         <Label Content="PATH FILE" Height="22" HorizontalAlignment="Left" Margin="539,58.412,0,0" x:Name="labelq_Copy2" VerticalAlignment="Top" FontFamily="Avenir Next LT Pro" Background="#FF002638" Foreground="#FF00DEFF" Grid.Column="2" FontWeight="Bold" Width="60" FontSize="10" Grid.Row="1" />
 
         <Slider ValueChanged="TesScroll" x:Name = "Slider1" Grid.ColumnSpan="3" HorizontalAlignment="Left" Height="23" Margin="6,191,0,0" Grid.Row="1" VerticalAlignment="Top" Width="393"/>
+        <Slider ValueChanged="UpDown_Slider" x:Name ="UpDownSlider" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" Margin="165,10,0,0" Height="19" Width="340" RenderTransformOrigin="0.5,0.5" Grid.Row="1">
+            <Slider.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90
+                                     "/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Slider.RenderTransform>
+        </Slider>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="29*"/>
