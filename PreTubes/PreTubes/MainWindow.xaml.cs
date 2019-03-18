@@ -29,6 +29,7 @@ namespace PreTubes
      */
     public class House
     {
+        public bool visited = false;
         private int num;
         private int level = 0;
         private List<int> ways;
@@ -142,6 +143,13 @@ namespace PreTubes
             AntahBerantah[num_from].removeWays(AntahBerantah[num_from].getTop());
             leveliterator--;
         }
+
+        public void ResetVisited()
+        {
+            for (int i = 0; i < AntahBerantah.Count(); i++)
+                AntahBerantah[i].visited = false;
+        }
+
     }
     public partial class MainWindow : Window
     {
@@ -177,6 +185,9 @@ namespace PreTubes
         //Inisialisasi font yang digunakan
         public td.Font drawFont;
 
+        //Inisialisasi font yang digunakan UNTUK menunjukkan step.
+        public td.Font drawFontStep;
+
         public MainWindow()
         {
         }
@@ -197,10 +208,29 @@ namespace PreTubes
                 MessageBox.Show("Isi dulu path map nya!");
             }
         }
-        public void DrawPath ()
+        public void DrawPath (bool found)
         {
+            //this.Graf.Child.Refresh();
             td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
+            
+            foreach (int i in urutanSimpul)
+            {
+                urutanSimpulFinal.Add(i);
+            }
 
+            urutanSimpul.Clear();
+
+            if (!found)
+            {
+                myFontBrushNew = new td.SolidBrush(td.ColorTranslator.FromHtml("#ff4646"));
+                myPenNew = new td.Pen(td.ColorTranslator.FromHtml("#ff4646"), 2);
+                PenStrokeNew = new td.Pen(td.ColorTranslator.FromHtml("#ff4646"), 3);
+            } else
+            {
+                myFontBrushNew = new td.SolidBrush(td.ColorTranslator.FromHtml("#00ff66"));
+                myPenNew = new td.Pen(td.ColorTranslator.FromHtml("#00ff66"), 2);
+                PenStrokeNew = new td.Pen(td.ColorTranslator.FromHtml("#00ff66"), 3);
+            }
             for (int i = 0; i < urutanSimpulFinal.Count(); i++)
             {
                 //ABlevel untuk menentukan posisi y nantinya, menggunakan atribut level pada House
@@ -226,7 +256,7 @@ namespace PreTubes
 
                     // (Urutan gambar #1)
                     //Gambar Line dari posisi from ke posisi posisi to
-                    graphicsObj.DrawLine(myPenNew, x_from, y_from, x_to, y_to);
+                    //graphicsObj.DrawLine(myPenNew, x_from, y_from, x_to, y_to);
                 }
                 // (Urutan gambar #2 )
                 //Membuat outline dari lingkaran
@@ -241,12 +271,32 @@ namespace PreTubes
                 else
                     drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
 
+                if (size > 0)
+                    drawFontStep = new td.Font("Avenir Next LT Pro", size / 3, td.FontStyle.Bold);
+                else
+                    drawFontStep = new td.Font("Avenir Next LT Pro", (float)0.5, td.FontStyle.Bold);
+
                 // (Urutan gambar #4)
                 //Font diset pada posisi node.
                 if (size > 1)
+                {
                     graphicsObj.DrawString(urutanSimpulFinal[i].ToString(), drawFont, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
+                    graphicsObj.DrawString((i+1).ToString(), drawFontStep, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) - (float)(size/2)), (ABlevel - 1) * 2 * size + (float)(size / 6));
+                }
+                
             }
-        }
+            /*
+            myBrush.Dispose();
+            myFontBrush.Dispose();
+            myFontBrushNew.Dispose();
+            myPen.Dispose();
+            PenStroke.Dispose();
+            myPenNew.Dispose();
+            PenStrokeNew.Dispose();
+            drawFont.Dispose();
+            drawFontStep.Dispose();
+            */
+    }
 
         public string EksekusiQuery(string[] queryString, int[] queryNum, bool isDraw)
         {
@@ -259,16 +309,22 @@ namespace PreTubes
             //Conditional untuk angka pertama pada query : '0' atau '1':
             if (queryNum[0]==0 || queryNum[0] == 1)
             {
+
                 if (queryNum[0] == 0)
                     result = Mendekat(queryNum[1], queryNum[2]); // Mendekat(num_to, num_from)
                 else
+                {
                     result = Menjauh(queryNum[1], queryNum[2]); // Menjauh(num_to, num_from)
+                    AB.ResetVisited();
+                }
+                    
+                this.Graf.Child.Refresh();
                 if (result)
                 {
                     if (isDraw)
                     {
                         DFSDraw(1, 1);
-                        DrawPath();
+                        DrawPath(true);
                     }
                     urutanSimpulFinal.Clear();
                     answer = "YA";
@@ -278,9 +334,12 @@ namespace PreTubes
                     if (isDraw)
                     {
                         DFSDraw(1, 1);
+                        DrawPath(false);
                     }
+                    urutanSimpulFinal.Clear();
                     answer = "TIDAK";
                 }
+                
             }
             else
             {
@@ -343,7 +402,9 @@ namespace PreTubes
         }
         private void Next_Click(object sender, RoutedEventArgs e)
         {
+            
             string temp;
+            urutanSimpul.Clear();
             urutanSimpulFinal.Clear();
             if (pathQueryFile == null)
             {
@@ -353,9 +414,9 @@ namespace PreTubes
             else
             {
                 StreamReader queryFile = new StreamReader(pathQueryFile);
-                temp = queryFile.ReadLine();
-                temp = queryFile.ReadLine();
-                if (queueQuery == "Ready")
+                temp = queryFile.ReadLine(); //Baca baris pertama
+                temp = queryFile.ReadLine(); //Baca query selanjutnya
+                if (queueQuery == "Ready") //Jika sudah ready, dari fungsi insertQuery()
                 {
                     queueQuery = temp;
                 }
@@ -368,6 +429,7 @@ namespace PreTubes
                     temp = queryFile.ReadLine();
                     if (temp == null)
                     {
+                        this.Graf.Child.Refresh();
                         Console.WriteLine("Semua query dalam file sudah diproses");
                         MessageBox.Show("Semua query dalam file sudah diproses");
                         DFSDraw(1, 1);
@@ -383,7 +445,9 @@ namespace PreTubes
                     string[] queryString = queueQuery.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     int[] queryNum = new int[queryString.Length];
                     string answer = "";
+                    
                     answer = EksekusiQuery(queryString, queryNum, true);
+                   // urutanSimpulFinal.ForEach(Console.Write);
                     Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
                     MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
                 }
@@ -436,7 +500,8 @@ namespace PreTubes
             foreach (int idxSearch in AB.AntahBerantah[num_from].listWays())
             {
                 //Lakukan DFS lagi pada tetangga.
-                DFSDraw(AB.AntahBerantah[idxSearch].getNum(), num_from);
+                if (AB.AntahBerantah[idxSearch].getLevel() > AB.AntahBerantah[num_from].getLevel())
+                    DFSDraw(AB.AntahBerantah[idxSearch].getNum(), num_from);
             }
 
             //Deklarasi variabel graphics
@@ -495,7 +560,7 @@ namespace PreTubes
                 size = initial_size + ratio * (float)Slider1.Value;
                 // Gambar lagi!
                 DFSDraw(1, 1);
-                DrawPath();
+                //DrawPath(true);
             }
         }
 
@@ -506,42 +571,40 @@ namespace PreTubes
             if (AB.AntahBerantah[num_from].getTop() == num_to) //Kalau suatu simpul terletak di bawah num_to
             {
                 urutanSimpul.Add(num_to);
-                foreach (int i in urutanSimpul)
-                {
-                    urutanSimpulFinal.Add(i);
-                }
+               
                 found = true;
-                urutanSimpul.Remove(num_to);
+                //urutanSimpul.Remove(num_to);
             }
             else if (AB.AntahBerantah[num_from].getTop() != 0)
             { //recc
                 found = found || Mendekat(num_to, AB.AntahBerantah[num_from].getTop());
             }
-            urutanSimpul.Remove(num_from);
+            //urutanSimpul.Remove(num_from);
             return found;
         }
         public bool Menjauh(int num_to, int num_from)
         {
             bool found = false;
+            AB.AntahBerantah[num_from].visited = true;
             urutanSimpul.Add(num_from);
             if (AB.AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau ketemu
             {
                 urutanSimpul.Add(num_to);
-                foreach (int i in urutanSimpul)
-                {
-                    urutanSimpulFinal.Add(i);
-                }
                 found = true;
-                urutanSimpul.Remove(num_to);
+                //urutanSimpul.Remove(num_to);
             }
             else
             { //recc
                 foreach (int way in AB.AntahBerantah[num_from].listWays())
                 {
-                    found = found || Menjauh(num_to, way);
+                    if (AB.AntahBerantah[way].visited == false)
+                    {
+                        found = found || Menjauh(num_to, way);
+                    }
+                        
                 }
             }
-            urutanSimpul.Remove(num_from);
+            //urutanSimpul.Remove(num_from);
             return found;
         }
     }

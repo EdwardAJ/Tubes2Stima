@@ -1,0 +1,5 @@
+0 2 8 : YA
+1 2 8 : TIDAK
+1 6 5 : TIDAK
+0 6 5 : TIDAK
+1 9 1 : YA
