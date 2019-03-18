@@ -29,7 +29,6 @@ namespace PreTubes
      */
     public class House
     {
-        public bool visited = false;
         private int num;
         private int level = 0;
         private List<int> ways;
@@ -143,13 +142,6 @@ namespace PreTubes
             AntahBerantah[num_from].removeWays(AntahBerantah[num_from].getTop());
             leveliterator--;
         }
-
-        public void ResetVisited()
-        {
-            for (int i = 0; i < AntahBerantah.Count(); i++)
-                AntahBerantah[i].visited = false;
-        }
-
     }
     public partial class MainWindow : Window
     {
@@ -188,9 +180,7 @@ namespace PreTubes
         //Inisialisasi font yang digunakan UNTUK menunjukkan step.
         public td.Font drawFontStep;
 
-        public MainWindow()
-        {
-        }
+        public MainWindow(){}
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             string FilePath = PathFile.Text;
@@ -285,17 +275,6 @@ namespace PreTubes
                 }
                 
             }
-            /*
-            myBrush.Dispose();
-            myFontBrush.Dispose();
-            myFontBrushNew.Dispose();
-            myPen.Dispose();
-            PenStroke.Dispose();
-            myPenNew.Dispose();
-            PenStrokeNew.Dispose();
-            drawFont.Dispose();
-            drawFontStep.Dispose();
-            */
     }
 
         public string EksekusiQuery(string[] queryString, int[] queryNum, bool isDraw)
@@ -313,10 +292,7 @@ namespace PreTubes
                 if (queryNum[0] == 0)
                     result = Mendekat(queryNum[1], queryNum[2]); // Mendekat(num_to, num_from)
                 else
-                {
                     result = Menjauh(queryNum[1], queryNum[2]); // Menjauh(num_to, num_from)
-                    AB.ResetVisited();
-                }
                     
                 this.Graf.Child.Refresh();
                 if (result)
@@ -350,9 +326,8 @@ namespace PreTubes
             return answer;
         }
         public void insertQuery()
-        {
+        {//Procedure yang dijalankan apabila query dari file
             pathQueryFile = FileQuery.Text;
-            //Procedure yang dijalankan apabila query dari file
             if (pathQueryFile != "")
             {
                 string answer = ""; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
@@ -568,43 +543,32 @@ namespace PreTubes
         {
             bool found = false;
             urutanSimpul.Add(num_from);
-            if (AB.AntahBerantah[num_from].getTop() == num_to) //Kalau suatu simpul terletak di bawah num_to
-            {
+            if (AB.AntahBerantah[num_from].getTop() == num_to)
+            {//Kalau suatu simpul terletak di bawah num_to
                 urutanSimpul.Add(num_to);
-               
                 found = true;
-                //urutanSimpul.Remove(num_to);
             }
             else if (AB.AntahBerantah[num_from].getTop() != 0)
-            { //recc
+            {//recc
                 found = found || Mendekat(num_to, AB.AntahBerantah[num_from].getTop());
             }
-            //urutanSimpul.Remove(num_from);
             return found;
         }
         public bool Menjauh(int num_to, int num_from)
         {
             bool found = false;
-            AB.AntahBerantah[num_from].visited = true;
             urutanSimpul.Add(num_from);
-            if (AB.AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau ketemu
-            {
-                urutanSimpul.Add(num_to);
-                found = true;
-                //urutanSimpul.Remove(num_to);
+            if (num_from==num_to )
+            {//Kalau ketemu dan titik pada query berbeda
+                found = urutanSimpul.Count != 1;
             }
             else
-            { //recc
+            {//recc
                 foreach (int way in AB.AntahBerantah[num_from].listWays())
-                {
-                    if (AB.AntahBerantah[way].visited == false)
-                    {
-                        found = found || Menjauh(num_to, way);
-                    }
-                        
+                {//Sekaligus kasus basis, jika listWays kosong tetap return found = false
+                    found = found || Menjauh(num_to, way);
                 }
             }
-            //urutanSimpul.Remove(num_from);
             return found;
         }
     }

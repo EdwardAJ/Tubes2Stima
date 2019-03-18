@@ -31,53 +31,41 @@ using System.Windows.Media.TextFormatting;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Shell;
-using System.Threading;
 
 
-namespace PreTubes
-{
-
-
+namespace PreTubes {
+    
+    
     /// <summary>
     /// App
     /// </summary>
-    public partial class App : System.Windows.Application
-    {
-
+    public partial class App : System.Windows.Application {
+        
         /// <summary>
         /// InitializeComponent
         /// </summary>
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "4.0.0.0")]
-        public void InitializeComponent()
-        {
-
-#line 5 "..\..\App.xaml"
+        public void InitializeComponent() {
+            
+            #line 5 "..\..\App.xaml"
             this.StartupUri = new System.Uri("MainWindow.xaml", System.UriKind.Relative);
-
-#line default
-#line hidden
+            
+            #line default
+            #line hidden
         }
-
-        public static void Jalan()
-        {
-            PreTubes.App app = new PreTubes.App();
-            app.InitializeComponent();
-            app.Run();
-        }
-
+        
         /// <summary>
         /// Application Entry Point.
         /// </summary>
         [System.STAThreadAttribute()]
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "4.0.0.0")]
-        public static void Main()
-        {
-            var stackSize = 10000000;
-            Thread t = new Thread(new ThreadStart(Jalan), stackSize);
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
+        public static void Main() {
+            PreTubes.App app = new PreTubes.App();
+            app.InitializeComponent();
+            app.Run();
         }
     }
 }
+
