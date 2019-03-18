@@ -251,7 +251,7 @@ namespace PreTubes
         public string EksekusiQuery(string[] queryString, int[] queryNum, bool isDraw)
         {
             string answer;
-            bool dfs;
+            bool result;
             for (int i = 0; i < queryString.Length; i++)
             {
                 queryNum[i] = int.Parse(queryString[i]);
@@ -259,11 +259,11 @@ namespace PreTubes
             //Conditional untuk angka pertama pada query : '0' atau '1':
             if (queryNum[0]==0 || queryNum[0] == 1)
             {
-                if (queryNum[0] == 1)
-                    dfs = DFS(queryNum[1], queryNum[2]);
+                if (queryNum[0] == 0)
+                    result = Mendekat(queryNum[1], queryNum[2]); // Mendekat(num_to, num_from)
                 else
-                    dfs = DFS(queryNum[2], queryNum[1]);
-                if (dfs)
+                    result = Menjauh(queryNum[1], queryNum[2]); // Menjauh(num_to, num_from)
+                if (result)
                 {
                     if (isDraw)
                     {
@@ -499,7 +499,7 @@ namespace PreTubes
             }
         }
 
-        public bool DFS(int num_from, int num_to)
+        public bool Mendekat(int num_to, int num_from)
         {
             bool found = false;
             urutanSimpul.Add(num_from);
@@ -515,7 +515,31 @@ namespace PreTubes
             }
             else if (AB.AntahBerantah[num_from].getTop() != 0)
             { //recc
-                found = found || DFS(AB.AntahBerantah[num_from].getTop(), num_to);
+                found = found || Mendekat(num_to, AB.AntahBerantah[num_from].getTop());
+            }
+            urutanSimpul.Remove(num_from);
+            return found;
+        }
+        public bool Menjauh(int num_to, int num_from)
+        {
+            bool found = false;
+            urutanSimpul.Add(num_from);
+            if (AB.AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau ketemu
+            {
+                urutanSimpul.Add(num_to);
+                foreach (int i in urutanSimpul)
+                {
+                    urutanSimpulFinal.Add(i);
+                }
+                found = true;
+                urutanSimpul.Remove(num_to);
+            }
+            else
+            { //recc
+                foreach (int way in AB.AntahBerantah[num_from].listWays())
+                {
+                    found = found || Menjauh(num_to, way);
+                }
             }
             urutanSimpul.Remove(num_from);
             return found;
