@@ -19,8 +19,6 @@ using tw = System.Windows.Forms;
 using td = System.Drawing;
 
 
-
-
 namespace PreTubes
 {
     /*
@@ -34,10 +32,8 @@ namespace PreTubes
         private int num;
         private int level = 0;
         private List<int> ways;
-        private bool visit = false;
-        private int level_ID = 0;
-
-
+        private int top;
+        private int level_ID = 0; //Menentukan indeks X rumah pada suatu level
 
         public House(int n)
         {
@@ -52,6 +48,14 @@ namespace PreTubes
         {
             return level;
         }
+        public int getLevel_ID()
+        {
+            return level_ID;
+        }
+        public int getTop()
+        {
+            return top;
+        }
         public void setNum(int n)
         {
             num = n;
@@ -59,6 +63,14 @@ namespace PreTubes
         public void setLevel(int l)
         {
             level = l;
+        }
+        public void setLevel_ID(int ID)
+        {
+            level_ID = ID;
+        }
+        public void setTop(int t)
+        {
+            top = t;
         }
         public int getElmt(int i)
         {
@@ -76,27 +88,9 @@ namespace PreTubes
         {
             ways.Remove(input);
         }
-        public bool getVisit()
-        {
-            return visit;
-        }
-        public void setVisit(bool _visit)
-        {
-            visit = _visit;
-        }
-        public int getLevel_ID()
-        {
-            return level_ID;
-        }
-        public void setLevel_ID(int ID)
-        {
-            level_ID = ID;
-        }
-
     }
     public class AntahBerantahClass
-    {
-        
+    {        
         public int[] arrID = new int[100001];
         public int[] integers;
         public List<House> AntahBerantah;
@@ -127,51 +121,25 @@ namespace PreTubes
                 AntahBerantah[integers[i]].addWays(integers[i + 1]);
                 AntahBerantah[integers[i + 1]].addWays(integers[i]);
             }
-            //show();
         }
-        public void show() //Fungsi untuk debugging.
-        {
-            /*
-            foreach (House h in AntahBerantah)
-            {
-                Console.Write(h.getNum());
-                Console.Write("_");
-                Console.Write(h.getLevel());
-                Console.Write("_");
-                Console.Write(h.getLevel_ID());
-                Console.Write("_");
-                if (h.listWays().Count != 0)
-                {
-                    foreach (int way in h.listWays())
-                    {
-                        Console.Write(way);
-                    }
-                }
-                else
-                {
-                    Console.Write("E");
-                }
-                Console.Write("   ");
-            }
-            Console.WriteLine();
-            */
-        }
-
         public void DFSSetLevel(int num_from)
         {
             AntahBerantah[num_from].setLevel(leveliterator);
-            arrID[leveliterator] += 1;
+            arrID[leveliterator]++;
             AntahBerantah[num_from].setLevel_ID(arrID[leveliterator]);
             leveliterator++;
-            for (int i = 0; i < AntahBerantah[num_from].listWays().Count; i++)
+            foreach(int idxSearch in AntahBerantah[num_from].listWays())
             {
-                int idxSearch = AntahBerantah[num_from].listWays()[i];
                 if (AntahBerantah[idxSearch].getLevel() == 0) //Kalau belum dikunjungi
                 {
                     DFSSetLevel(AntahBerantah[idxSearch].getNum());
                 }
-
+                if (AntahBerantah[idxSearch].getLevel() == leveliterator - 2)
+                {
+                    AntahBerantah[num_from].setTop(idxSearch);
+                }
             }
+            AntahBerantah[num_from].removeWays(AntahBerantah[num_from].getTop());
             leveliterator--;
         }
     }
@@ -180,7 +148,6 @@ namespace PreTubes
         public AntahBerantahClass AB;
         public List<int> urutanSimpul = new List<int>();
         public List<int> urutanSimpulFinal = new List<int>();
-        //public float zoom = 1f;
         public float size = 0;
         public float ratio = 5; //Rasio adalah skala perbesaran saat slider digeser
         public string queueQuery; //Query File yang ngantri untuk diklik next
@@ -210,11 +177,8 @@ namespace PreTubes
         //Inisialisasi font yang digunakan
         public td.Font drawFont;
 
-
         public MainWindow()
         {
-            Console.WriteLine("Press any key to exit.");
-            System.Console.Read();
         }
         private void Load_Click(object sender, RoutedEventArgs e)
         {
@@ -223,7 +187,6 @@ namespace PreTubes
             {
                 AB = new AntahBerantahClass(FilePath);
                 AB.DFSSetLevel(1); //DFS from node "1" to ALL OF THE CONNECTED NODES to set the level.
-                AB.show();
                 size = (float)400 / AB.AntahBerantah.Count() + ratio * (float)Slider1.Value;
                 MessageBox.Show("Map loaded");
                 this.Graf.Child.Refresh();
@@ -233,9 +196,7 @@ namespace PreTubes
             {
                 MessageBox.Show("Isi dulu path map nya!");
             }
-            //DFS(8, 2);
         }
-
         public void DrawPath ()
         {
             td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
@@ -258,73 +219,59 @@ namespace PreTubes
                     int posx_to = (int)(AB.AntahBerantah[urutanSimpulFinal[i + 1]].getLevel_ID()); //posisi x menuju
                     int posy_to = (int)(AB.AntahBerantah[urutanSimpulFinal[i + 1]].getLevel()) - 1; // posisi y menuju
 
+                    int x_from = (int)(posx_from * 400 / (AB.arrID[posy_from + 1] + 1) + 0.5 * size);
+                    int y_from = (int)(posy_from * 2 * size + 0.5 * size);
+                    int x_to = (int)(posx_to * 400 / (AB.arrID[posy_to + 1] + 1) + 0.5 * size);
+                    int y_to = (int)(posy_to * 2 * size + 0.5 * size);
+
                     // (Urutan gambar #1)
                     //Gambar Line dari posisi from ke posisi posisi to
-                    graphicsObj.DrawLine(myPenNew, (int)(posx_from * 400 / (AB.arrID[posy_from + 1] + 1) + 0.5 * size), (int)(posy_from * 2 * size + 0.5 * size), (int)(posx_to * 400 / (AB.arrID[posy_to + 1] + 1) + 0.5 * size), (int)(posy_to * 2 * size + 0.5 * size));
-
-                    // (Urutan gambar #2 )
-                    //Membuat outline dari lingkaran
-                    graphicsObj.DrawEllipse(PenStrokeNew, rect1);
-
-                    // (Urutan gambar #3)
-                    //Menggambar lingkaran dengan radius size (sizex) dan (sizey)
-                    graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size));
-
-                    if (size > 0)
-                        drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
-                    else
-                        drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
-
-                    // (Urutan gambar #4)
-                    //Font diset pada posisi node.
-                    if (size > 1)
-                        graphicsObj.DrawString(urutanSimpulFinal[i].ToString(), drawFont, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
-                } else
-                {
-                    // (Urutan gambar #2 )
-                    //Membuat outline dari lingkaran
-                    graphicsObj.DrawEllipse(PenStrokeNew, rect1);
-
-                    // (Urutan gambar #3)
-                    //Menggambar lingkaran dengan radius size (sizex) dan (sizey)
-                    graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size));
-
-                    if (size > 0)
-                        drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
-                    else
-                        drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
-
-                    // (Urutan gambar #4)
-                    //Font diset pada posisi node.
-                    if (size > 1)
-                        graphicsObj.DrawString(urutanSimpulFinal[i].ToString(), drawFont, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
+                    graphicsObj.DrawLine(myPenNew, x_from, y_from, x_to, y_to);
                 }
+                // (Urutan gambar #2 )
+                //Membuat outline dari lingkaran
+                graphicsObj.DrawEllipse(PenStrokeNew, rect1);
+
+                // (Urutan gambar #3)
+                //Menggambar lingkaran dengan radius size (sizex) dan (sizey)
+                graphicsObj.FillEllipse(myBrush, rect1);
+
+                if (size > 0)
+                    drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
+                else
+                    drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
+
+                // (Urutan gambar #4)
+                //Font diset pada posisi node.
+                if (size > 1)
+                    graphicsObj.DrawString(urutanSimpulFinal[i].ToString(), drawFont, myFontBrushNew, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
             }
         }
 
-        public void EksekusiQuery(string[] queryString, int[] queryNum, string[] answer, bool isDraw)
+        public string EksekusiQuery(string[] queryString, int[] queryNum, bool isDraw)
         {
+            string answer;
+            bool dfs;
             for (int i = 0; i < queryString.Length; i++)
             {
                 queryNum[i] = int.Parse(queryString[i]);
             }
-
             //Conditional untuk angka pertama pada query : '0' atau '1':
-            if (queryNum[0] == 0)
+            if (queryNum[0]==0 || queryNum[0] == 1)
             {
-                if (DFS(queryNum[2], queryNum[1])) //DFS(from,to)
+                if (queryNum[0] == 1)
+                    dfs = DFS(queryNum[1], queryNum[2]);
+                else
+                    dfs = DFS(queryNum[2], queryNum[1]);
+                if (dfs)
                 {
-                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    //Console.WriteLine("Urutan Simpul yang Anda lalui:");
-                    //urutanSimpulFinal.ForEach(Console.WriteLine);
                     if (isDraw)
                     {
                         DFSDraw(1, 1);
                         DrawPath();
                     }
                     urutanSimpulFinal.Clear();
-                    answer[0] = "YA";
+                    answer = "YA";
                 }
                 else
                 {
@@ -332,45 +279,16 @@ namespace PreTubes
                     {
                         DFSDraw(1, 1);
                     }
-                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    answer[0] = "TIDAK";
-                }
-            }
-            else if (queryNum[0] == 1)
-            {
-                if (DFS(queryNum[1], queryNum[2]))
-                {
-                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nYA");
-                    Console.WriteLine("Urutan Simpul yang Anda lalui:");
-                    //urutanSimpulFinal.Reverse();
-                    //urutanSimpulFinal.ForEach(Console.WriteLine);
-                    if (isDraw)
-                    {
-                        DFSDraw(1, 1);
-                        DrawPath();
-                    }
-                    urutanSimpulFinal.Clear();
-                    answer[0] = "YA";
-                }
-                else
-                {
-                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    if (isDraw)
-                    {
-                        DFSDraw(1, 1);
-                    }
-                    answer[0] = "TIDAK";
+                    answer = "TIDAK";
                 }
             }
             else
             {
                 Console.WriteLine("Query harus sesuai format");
                 MessageBox.Show("Query harus sesuai format");
-                answer[0] = "ERROR";
+                answer = "ERROR";
             }
+            return answer;
         }
         public void insertQuery()
         {
@@ -378,16 +296,10 @@ namespace PreTubes
             //Procedure yang dijalankan apabila query dari file
             if (pathQueryFile != "")
             {
-                string[] answer = new string[1]; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
+                string answer = ""; // Hasil jawaban (Ya atau Tidak), untuk ditulis di file
                 StreamReader queryFile = new StreamReader(pathQueryFile); // File Query
                 //Generate path file answer
-                string pathAnswerFile = pathQueryFile;
-                while (pathAnswerFile[pathAnswerFile.Length - 1] != '\\')
-                {
-                    pathAnswerFile = pathAnswerFile.Remove(pathAnswerFile.Length - 1);
-                    Console.WriteLine(pathAnswerFile);
-                }
-                pathAnswerFile = pathAnswerFile + "answer.txt";
+                string pathAnswerFile = "answer.txt";
                 StreamWriter answerFile = new StreamWriter(pathAnswerFile); // File Answer
                 string temp = queryFile.ReadLine();
                 int n = int.Parse(temp);
@@ -397,8 +309,8 @@ namespace PreTubes
                     queueQuery = temp;
                     string[] queryString = temp.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     int[] queryNum = new int[queryString.Length];
-                    EksekusiQuery(queryString, queryNum, answer, false);
-                    answerFile.WriteLine(temp + " : " + answer[0]);
+                    answer = EksekusiQuery(queryString, queryNum, false);
+                    answerFile.WriteLine(temp + " : " + answer);
                 }
                 queryFile.Close();
                 answerFile.Close();
@@ -470,10 +382,10 @@ namespace PreTubes
                 {
                     string[] queryString = queueQuery.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     int[] queryNum = new int[queryString.Length];
-                    string[] answer = new string[1];
-                    EksekusiQuery(queryString, queryNum, answer, true);
-                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
-                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
+                    string answer = "";
+                    answer = EksekusiQuery(queryString, queryNum, true);
+                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
+                    MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
                 }
             }
         }
@@ -500,13 +412,11 @@ namespace PreTubes
             {
                 if (AB != null) //KALAU MAPNYA SUDAH DILOAD
                 {
-                    string[] answer;
-                    answer = new string[1];
-                    EksekusiQuery(queryString, queryNum, answer, true);
-                    if (answer[0] != "ERROR")
+                    string answer = EksekusiQuery(queryString, queryNum, true);
+                    if (answer != "ERROR")
                     {
-                        Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
-                        MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer[0]);
+                        Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
+                        MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
                     }
                 }
                 else
@@ -523,13 +433,10 @@ namespace PreTubes
         public void DFSDraw(int num_from, int num_prec)
         {
             //Traversal untuk mencari SEMUA TETANGGA dari node.
-            for (int i = 0; i < AB.AntahBerantah[num_from].listWays().Count; i++)
+            foreach (int idxSearch in AB.AntahBerantah[num_from].listWays())
             {
-                int idxSearch = AB.AntahBerantah[num_from].listWays()[i];
-                //Cari dari "atas" ke "bawah", maksudnya, cari tetangga yang memiliki level lebih dalam dari node asal.
-                if (AB.AntahBerantah[idxSearch].getLevel() > AB.AntahBerantah[num_from].getLevel())
-                    //Lakukan DFS lagi pada tetangga.
-                    DFSDraw(AB.AntahBerantah[idxSearch].getNum(), num_from);
+                //Lakukan DFS lagi pada tetangga.
+                DFSDraw(AB.AntahBerantah[idxSearch].getNum(), num_from);
             }
 
             //Deklarasi variabel graphics
@@ -539,7 +446,7 @@ namespace PreTubes
             int ABlevel = AB.AntahBerantah[num_from].getLevel();
 
             //ABlevelx untuk menentukan posisi x nantinya, menggunakan atribut level_ID pada House.
-            int ABlevelx = (AB.AntahBerantah[num_from].getLevel_ID());
+            int ABlevelx = AB.AntahBerantah[num_from].getLevel_ID();
 
             //Buat rectangle yang akan dipakai untuk method draw dan fill.
             td.Rectangle rect = new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size);
@@ -564,14 +471,10 @@ namespace PreTubes
             //Menggambar lingkaran dengan radius size (sizex) dan (sizey)
             graphicsObj.FillEllipse(myBrush, new td.Rectangle(ABlevelx * 400 / (AB.arrID[ABlevel] + 1), (int)((ABlevel - 1) * 2 * size), (int)size, (int)size));
 
-           
             if (size > 0)
-            {
                 drawFont = new td.Font("Avenir Next LT Pro", size / 2, td.FontStyle.Bold);
-            } else
-            {
+            else
                 drawFont = new td.Font("Avenir Next LT Pro", 1, td.FontStyle.Bold);
-            }
 
             // (Urutan gambar #4)
             //Font diset pada posisi node.
@@ -579,7 +482,7 @@ namespace PreTubes
                 graphicsObj.DrawString(num_from.ToString(), drawFont, myFontBrush, (ABlevelx * 400 / (AB.arrID[ABlevel] + 1) + (float)(size / 4)), (ABlevel - 1) * 2 * size + (float)(size / 6));
         }
       
-        //Method untuk mem"binding" nilai dari scroll UNTUK ZOOM.
+        //Method untuk mem"binding" nilai dari scroll untuk zoom.
         public void TesScroll(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (AB != null)
@@ -599,41 +502,22 @@ namespace PreTubes
         public bool DFS(int num_from, int num_to)
         {
             bool found = false;
-            //Deklarasi variabel graphics
-            if (AB.AntahBerantah[num_from].listWays().Contains(num_to)) //Kalau suatu simpul terhubung LANGSUNG dengan num_to
+            urutanSimpul.Add(num_from);
+            if (AB.AntahBerantah[num_from].getTop() == num_to) //Kalau suatu simpul terletak di bawah num_to
             {
-                urutanSimpul.Add(num_from);
-                //cek apakah simpul num_to menjauh.
-                if (AB.AntahBerantah[num_to].getLevel() < AB.AntahBerantah[num_from].getLevel())
+                urutanSimpul.Add(num_to);
+                foreach (int i in urutanSimpul)
                 {
-                    urutanSimpul.Add(num_to);
-                    foreach (int i in urutanSimpul)
-                    {
-                        urutanSimpulFinal.Add(i);
-                    }
-                    //urutanSimpul.ForEach(Console.Write) ;
-                    found = true;
-                    urutanSimpul.Remove(num_to);
-                    /*
-                    Console.Write("TesLAGI: ");
-                    urutanSimpulFinal.ForEach(Console.Write);
-                    */
+                    urutanSimpulFinal.Add(i);
                 }
-                urutanSimpul.Remove(num_from);
+                found = true;
+                urutanSimpul.Remove(num_to);
             }
-            else
-            {   //rekurens
-                for (int i = 0; i < AB.AntahBerantah[num_from].listWays().Count; i++)
-                {
-                    urutanSimpul.Add(num_from);
-                    int idxSearch = AB.AntahBerantah[num_from].listWays()[i];
-                    if (AB.AntahBerantah[idxSearch].getLevel() < AB.AntahBerantah[num_from].getLevel())//cek apakah simpul num_to menjauh.
-                    {
-                        found = found || DFS(idxSearch, num_to);
-                    }
-                    urutanSimpul.Remove(num_from);
-                }
+            else if (AB.AntahBerantah[num_from].getTop() != 0)
+            { //recc
+                found = found || DFS(AB.AntahBerantah[num_from].getTop(), num_to);
             }
+            urutanSimpul.Remove(num_from);
             return found;
         }
     }

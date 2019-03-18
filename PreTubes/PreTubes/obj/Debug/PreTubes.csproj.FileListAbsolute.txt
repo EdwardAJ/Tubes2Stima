@@ -73,3 +73,18 @@ D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\Pre
 D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.csproj.CoreCompileInputs.cache
 D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.exe
 D:\INFORMATIKA ITB\Semester 4\IF2211 - Strategi Algoritma\TUBES2\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.pdb
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\bin\Debug\PreTubes.exe.config
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\bin\Debug\PreTubes.exe
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\bin\Debug\PreTubes.pdb
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.csprojAssemblyReference.cache
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\MainWindow.g.cs
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\App.g.cs
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes_MarkupCompile.cache
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes_MarkupCompile.lref
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\MainWindow.baml
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.g.resources
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.Properties.Resources.resources
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.csproj.GenerateResource.cache
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.csproj.CoreCompileInputs.cache
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.exe
+C:\Users\FtN\Codes\Stima\Tubes2Stima\PreTubes\PreTubes\obj\Debug\PreTubes.pdb
