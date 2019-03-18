@@ -322,13 +322,16 @@ namespace PreTubes
                     {
                         DFSDraw(1, 1);
                         DrawPath();
-                        urutanSimpulFinal.Clear();
                     }
+                    urutanSimpulFinal.Clear();
                     answer[0] = "YA";
                 }
                 else
                 {
-                    DFSDraw(1, 1);
+                    if (isDraw)
+                    {
+                        DFSDraw(1, 1);
+                    }
                     //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     answer[0] = "TIDAK";
@@ -347,15 +350,18 @@ namespace PreTubes
                     {
                         DFSDraw(1, 1);
                         DrawPath();
-                        urutanSimpulFinal.Clear();
                     }
+                    urutanSimpulFinal.Clear();
                     answer[0] = "YA";
                 }
                 else
                 {
                     //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
                     //MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\nTIDAK");
-                    DFSDraw(1, 1);
+                    if (isDraw)
+                    {
+                        DFSDraw(1, 1);
+                    }
                     answer[0] = "TIDAK";
                 }
             }
@@ -426,6 +432,7 @@ namespace PreTubes
         private void Next_Click(object sender, RoutedEventArgs e)
         {
             string temp;
+            urutanSimpulFinal.Clear();
             if (pathQueryFile == null)
             {
                 Console.WriteLine("Jangan lupa untuk Insert Query!");
