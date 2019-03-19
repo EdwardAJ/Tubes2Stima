@@ -153,6 +153,8 @@ namespace PreTubes
         public float ratio = 5; //Rasio adalah skala perbesaran saat slider digeser
         public string queueQuery; //Query File yang ngantri untuk diklik next
         public string pathQueryFile;
+        public bool found;
+        public bool canDraw;
 
         //Deklarasi brush, untuk membuat lingkaran.
         public td.SolidBrush myBrush = new td.SolidBrush(td.ColorTranslator.FromHtml("#002638"));
@@ -203,14 +205,6 @@ namespace PreTubes
         {
             //this.Graf.Child.Refresh();
             td.Graphics graphicsObj = this.Graf.Child.CreateGraphics();
-            
-            foreach (int i in urutanSimpul)
-            {
-                urutanSimpulFinal.Add(i);
-            }
-
-            urutanSimpul.Clear();
-
             if (!found)
             {
                 myFontBrushNew = new td.SolidBrush(td.ColorTranslator.FromHtml("#ff4646"));
@@ -295,25 +289,37 @@ namespace PreTubes
                 else
                     result = Menjauh(queryNum[1], queryNum[2]); // Menjauh(num_to, num_from)
                     
-                this.Graf.Child.Refresh();
+                foreach (int i in urutanSimpul)
+                {
+                    urutanSimpulFinal.Add(i);
+                }
                 if (result)
                 {
                     if (isDraw)
                     {
+                        this.Graf.Child.Refresh();
                         DFSDraw(1, 1);
-                        DrawPath(true);
+                        found = true;
+                        DrawPath(found);
+                    } else
+                    {
+                       urutanSimpulFinal.Clear();
                     }
-                    urutanSimpulFinal.Clear();
                     answer = "YA";
                 }
                 else
                 {
                     if (isDraw)
                     {
+                        this.Graf.Child.Refresh();
                         DFSDraw(1, 1);
-                        DrawPath(false);
+                        found = false;
+                        DrawPath(found);
+                    } else
+                    {
+                       urutanSimpulFinal.Clear();
                     }
-                    urutanSimpulFinal.Clear();
+                
                     answer = "TIDAK";
                 }
                 
@@ -351,6 +357,7 @@ namespace PreTubes
                 answerFile.Close();
                 queueQuery = "Ready"; // Dengan ini, button "Next" bisa dieksekusi
                 DFSDraw(1, 1); // Reload tanpa draw path
+                canDraw = false;
             }
             else
             {
@@ -378,7 +385,7 @@ namespace PreTubes
         }
         private void Next_Click(object sender, RoutedEventArgs e)
         {
-            
+            canDraw = true;
             string temp;
             urutanSimpul.Clear();
             urutanSimpulFinal.Clear();
@@ -536,7 +543,8 @@ namespace PreTubes
                 size = initial_size + ratio * (float)Slider1.Value;
                 // Gambar lagi!
                 DFSDraw(1, 1);
-                //DrawPath(true);
+                if (canDraw)
+                    DrawPath(found);
             }
         }
 
@@ -548,7 +556,8 @@ namespace PreTubes
                 this.Graf.Child.Refresh();
                 updown_pan = (float)(1) * (AB.AntahBerantah.Count) * (float)UpDownSlider.Value * (float)Slider1.Value;
                 DFSDraw(1, 1);
-                DrawPath(true);
+                if (canDraw)
+                    DrawPath(found);
             }
         }
 
