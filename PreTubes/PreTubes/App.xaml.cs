@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace PreTubes
+namespace Tubes2Stima_AingCupu
 {
     /// <summary>
     /// Interaction logic for App.xaml
