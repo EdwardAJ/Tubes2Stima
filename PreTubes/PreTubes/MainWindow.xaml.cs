@@ -351,6 +351,8 @@ namespace PreTubes
                     string[] queryString = temp.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     int[] queryNum = new int[queryString.Length];
                     answer = EksekusiQuery(queryString, queryNum, false);
+                    urutanSimpul.Clear();
+                    urutanSimpulFinal.Clear();
                     answerFile.WriteLine(temp + " : " + answer);
                 }
                 queryFile.Close();
@@ -413,7 +415,7 @@ namespace PreTubes
                     if (temp == null)
                     {
                         this.Graf.Child.Refresh();
-                        Console.WriteLine("Semua query dalam file sudah diproses");
+                        //Console.WriteLine("Semua query dalam file sudah diproses");
                         MessageBox.Show("Semua query dalam file sudah diproses");
                         DFSDraw(1, 1);
                     }
@@ -431,7 +433,7 @@ namespace PreTubes
                     
                     answer = EksekusiQuery(queryString, queryNum, true);
                    // urutanSimpulFinal.ForEach(Console.Write);
-                    Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
+                    //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
                     MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
                 }
             }
@@ -439,6 +441,9 @@ namespace PreTubes
         private void Check_Click(object sender, RoutedEventArgs e)
         {
             //Program untuk mengecek apakah query yang diberikan dapat menghasilkan solusi
+            canDraw = true;
+            urutanSimpul.Clear();
+            urutanSimpulFinal.Clear();
             string[] queryString = Query.Text.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             int[] queryNum = new int[queryString.Length];
             //Cek apakah ada query yang diinput
@@ -446,12 +451,12 @@ namespace PreTubes
             {
                 if (queryString.Length == 0)
                 {
-                    Console.WriteLine("Query tidak boleh kosong");
+                    //Console.WriteLine("Query tidak boleh kosong");
                     MessageBox.Show("Query tidak boleh kosong");
                 }
                 else
                 {
-                    Console.WriteLine("Query harus sesuai format");
+                    //Console.WriteLine("Query harus sesuai format");
                     MessageBox.Show("Query harus sesuai format");
                 }
             }
@@ -462,7 +467,7 @@ namespace PreTubes
                     string answer = EksekusiQuery(queryString, queryNum, true);
                     if (answer != "ERROR")
                     {
-                        Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
+                        //Console.WriteLine("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
                         MessageBox.Show("Jawaban pertanyaan " + queryString[0] + " " + queryString[1] + " " + queryString[2] + " :\n" + answer);
                     }
                 }
